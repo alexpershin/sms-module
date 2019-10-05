@@ -1,0 +1,18 @@
+w1DevicesPath: src/test/resources/devices
+
+
+sensor-config:
+  sensors:
+    -
+      id: 28-000002c7c3ee
+      name: house
+    -
+      id: 28-000002c7d1b5
+      name: street
+    -
+      id: 28-000002c7eed3
+      name: basement
+    -
+      id: 28-0000066c6a65
+      name: case
+
