@@ -16,3 +16,15 @@ sensor-config:
       id: 28-0000066c6a65
       name: case
 
+sms-config:
+    inputFolder: src/test/resources/messages/inbox
+    outputFolder: src/test/resources/messages/outbox
+    processedFolder: src/test/resources/messages/processed
+
+    phones:
+    -
+        phone: 79210972100
+        name: megafon
+    -
+        phone: 79112403797
+        name: MTS

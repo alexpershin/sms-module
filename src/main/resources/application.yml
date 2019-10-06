@@ -15,3 +15,15 @@ sensor-config:
         id: 28-0000066c6a65
         name: case
 
+sms-config:
+    inputFolder: /var/spool/gammu/inbox
+    outputFolder: /var/spool/gammu/outbox
+    processedFolder: /var/spool/gammu/processed
+
+    phones:
+    -
+        phone: 79210972100
+        name: megafon
+    -
+        phone: 79112403797
+        name: MTS

@@ -1,4 +1,4 @@
-package org.tcontrol.sms;
+package org.tcontrol.sms.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +11,13 @@ public class AppConfig {
 
    @Bean
    @ConfigurationProperties(prefix = "sensor-config")
-    SensorConfig sensorConfig(){
+   SensorConfig sensorConfig(){
        return new SensorConfig();
    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "sms-config")
+    SMSConfig smsConfig(){
+        return new SMSConfig();
+    }
 }

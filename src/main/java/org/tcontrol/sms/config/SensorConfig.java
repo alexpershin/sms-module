@@ -1,4 +1,4 @@
-package org.tcontrol.sms;
+package org.tcontrol.sms.config;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ public class SensorConfig {
 
     @Data
     @RequiredArgsConstructor
-    static class SensorConfiguration
+    public static class SensorConfiguration
     {
         private String id;
         private String name;

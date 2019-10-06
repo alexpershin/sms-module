@@ -4,6 +4,6 @@ import org.tcontrol.sms.dao.SensorValue;
 
 import java.io.IOException;
 
-public interface MonitorInterface {
+public interface ITemperatureReader {
     SensorValue loadValue(String sensorUUID) throws IOException;
 }

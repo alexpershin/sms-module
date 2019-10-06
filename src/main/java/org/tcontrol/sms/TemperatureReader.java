@@ -1,46 +1,86 @@
 package org.tcontrol.sms;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.tcontrol.sms.dao.SensorValue;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.nio.charset.Charset;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Logger;
+
+import static java.util.logging.Level.SEVERE;
 
 @Component
-@Slf4j
-public class TemperatureReader {
-    @Getter
-    private Map<String, SensorValue> sensorValueMap = new HashMap<>();
+public class TemperatureReader implements ITemperatureReader {
 
-    @Autowired
-    private MonitorInterface temperatureMonitor;
+    private static final Logger LOGGER = Logger.getLogger(TemperatureReader.class.getName());
 
-    @Autowired
-    private SensorConfig config;
+    private static final String TEMPERATURE_PREFIX = "t=";
 
-    @Scheduled(cron = "0/30 * * * * ?")
-    void inputSmsScan() {
-        log.info("Reading temperature sensors...");
+    @Value("${w1DevicesPath}")
+    private String w1DevicesPath;
 
-        int successCount = 0;
-        for (SensorConfig.SensorConfiguration sensor : config.getSensors()) {
-            try {
-                String id = sensor.getId();
-                SensorValue value = temperatureMonitor.loadValue(id);
-                sensorValueMap.put(id, value);
-                successCount++;
-            } catch (IOException e) {
-                e.printStackTrace();
+    @Value("${w1SensorInfoFileName:#{'w1_slave'}}")
+    private String w1SensorInfoFileName;
+
+    @Override
+    public SensorValue loadValue(String sensorUUID) throws IOException {
+        double t = readTemperatureFromFile(getFullPathToDevice(sensorUUID));
+        return new SensorValue(-1, System.currentTimeMillis(), t);
+    }
+
+    private Path getFullPathToDevice(String deviceFileName) {
+        return FileSystems.getDefault().getPath(
+                getW1DevicesPath() + "/" + deviceFileName
+                        + "/" + getW1SensorInfoFileName());
+    }
+
+    private static double readTemperatureFromFile(Path pathDeviceFile) throws IOException{
+        int iniPos, endPos;
+        String strTemp;
+        double tvalue = 0;
+        List<String> lines;
+        try {
+            lines = Files.readAllLines(pathDeviceFile, Charset.defaultCharset());
+            for (String line : lines) {
+                if (line.contains(TEMPERATURE_PREFIX)) {
+                    iniPos = line.indexOf(TEMPERATURE_PREFIX) + 2;
+                    endPos = line.length();
+                    strTemp = line.substring(iniPos, endPos);
+                    tvalue = Double.parseDouble(strTemp) / 1000;
+                }
             }
+        } catch (IOException ex) {
+            LOGGER.log(SEVERE, "Error while reading file " + pathDeviceFile);
+            throw ex;
         }
-        log.info("Reading temperature completed(read {} sensors)", successCount);
+        return tvalue;
+    }
+
+    private String getW1DevicesPath() {
+        return w1DevicesPath;
+    }
+
+    /**
+     * @param w1DevicesPath the w1DevicesPath to set
+     */
+    public void setW1DevicesPath(String w1DevicesPath) {
+        this.w1DevicesPath = w1DevicesPath;
+    }
+
+    private String getW1SensorInfoFileName() {
+        return w1SensorInfoFileName;
+    }
+
+    /**
+     * @param w1SensorInfoFileName the w1SensorInfoFileName to set
+     */
+    public void setW1SensorInfoFileName(String w1SensorInfoFileName) {
+        this.w1SensorInfoFileName = w1SensorInfoFileName;
     }
 }
+
