@@ -12,8 +12,6 @@ public class HeatingOffCommand implements ISMSCommand {
     @Override
     public CommandResult run() {
         log.info("Executed");
-        CommandResult result = new CommandResult();
-        result.setStatus(STATUS.FAILURE);
-        return result;
+        return new CommandResult(STATUS.FAILURE,"not implemeted");
     }
 }

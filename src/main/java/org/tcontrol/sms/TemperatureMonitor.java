@@ -36,7 +36,7 @@ public class TemperatureMonitor implements ITemperatureMonitor {
                 sensorValueMap.put(id, value);
                 successCount++;
             } catch (IOException e) {
-                e.printStackTrace();
+                log.warn(e.getMessage());
             }
         }
         log.info("Reading temperature completed(read {} sensors)", successCount);

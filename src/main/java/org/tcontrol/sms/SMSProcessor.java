@@ -50,7 +50,7 @@ public class SMSProcessor {
                 Matcher matcher = patternPhone.matcher(fileName);
                 if (matcher.find()) {
                     String phoneNumber = matcher.group(1);
-                    CommandExecutor.CommandName commandName = readCommandFromFile(p);
+                    String commandName = readCommandFromFile(p);
                     if (commandName != null) {
                         CommandResult result = commandExecutor.run(commandName);
                         try {
@@ -66,28 +66,28 @@ public class SMSProcessor {
         }
     }
 
-    private void writeAnswer(String fileName, String phoneNumber, CommandResult result, CommandExecutor.CommandName command) throws IOException {
-        Path path = Paths.get(smsConfig.getOutputFolder(), "OUT_" + fileName);
+    private void writeAnswer(String fileName, String phoneNumber, CommandResult result, String command) throws IOException {
+        Path path = Paths.get(smsConfig.getOutputFolder(), "OUT+" + phoneNumber + "." + fileName);
         Files.deleteIfExists(path);
         Files.createFile(path);
         String resultText =
                 (result.getStatus() != STATUS.OK ?
-                        "Command " + command.name() + " result: " + result.getStatus().name() + "\n"
+                        "Command " + command + " result: " + result.getStatus().name() + "\n"
                         : "")
                         + result.getMessage();
         Files.write(path, resultText.getBytes());
-        log.info("Answer ready( status:{}, phone:+{}", result.getStatus(), phoneNumber);
+        log.info("Answer ready (status:{}, phone:+{})", result.getStatus(), phoneNumber);
     }
 
-    private CommandExecutor.CommandName readCommandFromFile(Path filePath) {
+    private String readCommandFromFile(Path filePath) {
         try {
-            CommandExecutor.CommandName command = null;
+            String command = null;
             List<String> lines = Files.readAllLines(filePath, Charset.defaultCharset());
             if (lines.size() == 1) {
                 String commandText = lines.get(0);
-                command = CommandExecutor.CommandName.valueOf(StringUtil.trim(commandText).toUpperCase());
+                command = StringUtil.trim(commandText).toUpperCase();
             } else {
-                log.info("Error while parsing command: {}", lines);
+                log.info("Error while found command: {}", lines);
             }
             //moving to result folder
             Path resultPath = Paths.get(smsConfig.getProcessedFolder(), filePath.getFileName().toString());

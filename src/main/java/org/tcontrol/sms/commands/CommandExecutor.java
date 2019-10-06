@@ -22,12 +22,25 @@ public class CommandExecutor {
     ISMSCommand statusCommand;
 
 
-    public CommandResult run(CommandName commandName) {
+    public CommandResult run(String name) {
+        final CommandName commandName;
+        try {
+            commandName = CommandName.valueOf(name);
+        }catch(IllegalArgumentException e){
+            return new CommandResult(STATUS.FAILURE, "unknown command: " + name);
+        }
         ISMSCommand command = null;
-        switch (commandName){
-            case STATUS:command=statusCommand;break;
-            case HEATING_ON:command=heatingOnCommand;break;
-            case HEATING_OFF:command=heatingOffCommand;break;
+        switch (commandName) {
+            case STATUS:
+                command = statusCommand;
+                break;
+            case HEATING_ON:
+                command = heatingOnCommand;
+                break;
+            case HEATING_OFF:
+                command = heatingOffCommand;
+                break;
+
         }
         return command.run();
     }

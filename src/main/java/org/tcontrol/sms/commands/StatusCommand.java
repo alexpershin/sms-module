@@ -38,9 +38,7 @@ public class StatusCommand implements ISMSCommand {
 
         String text = res.orElse("status not ready");
         log.info("Executed");
-        CommandResult result = new CommandResult();
-        result.setStatus(res.isPresent() ? STATUS.OK : STATUS.FAILURE);
-        result.setMessage(text);
+        CommandResult result = new CommandResult(res.isPresent() ? STATUS.OK : STATUS.FAILURE, text);
         return result;
     }
 }
