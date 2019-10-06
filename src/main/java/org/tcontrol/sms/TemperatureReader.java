@@ -30,7 +30,7 @@ public class TemperatureReader implements ITemperatureReader {
     @Override
     public SensorValue loadValue(String sensorUUID) throws IOException {
         double t = readTemperatureFromFile(getFullPathToDevice(sensorUUID));
-        return new SensorValue(-1, System.currentTimeMillis(), t);
+        return new SensorValue(null, System.currentTimeMillis(), t);
     }
 
     private Path getFullPathToDevice(String deviceFileName) {

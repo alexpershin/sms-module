@@ -15,7 +15,6 @@ import java.util.Map;
 @Component
 @Slf4j
 public class TemperatureMonitor implements ITemperatureMonitor {
-    @Getter
     private Map<String, SensorValue> sensorValueMap = new HashMap<>();
 
     @Autowired
@@ -33,6 +32,7 @@ public class TemperatureMonitor implements ITemperatureMonitor {
             try {
                 String id = sensor.getId();
                 SensorValue value = temperatureReader.loadValue(id);
+                value.setSensorId(id);
                 sensorValueMap.put(id, value);
                 successCount++;
             } catch (IOException e) {
@@ -40,5 +40,10 @@ public class TemperatureMonitor implements ITemperatureMonitor {
             }
         }
         log.info("Reading temperature completed(read {} sensors)", successCount);
+    }
+
+    @Override
+    public Map<String, SensorValue> getSensorValueMap() {
+        return sensorValueMap;
     }
 }

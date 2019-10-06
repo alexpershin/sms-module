@@ -1,7 +1,7 @@
 package org.tcontrol.sms;
 
-import org.tcontrol.sms.commands.STATUS;
+import org.tcontrol.sms.commands.CommandResult;
 
 public interface ISMSCommand {
-    STATUS run ();
+    CommandResult run ();
 }

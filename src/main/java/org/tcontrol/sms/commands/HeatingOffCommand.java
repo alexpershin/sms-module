@@ -7,8 +7,8 @@ import org.tcontrol.sms.ISMSCommand;
 
 @Component
 @Slf4j
-@Qualifier("heatingOnCommand")
-public class HeatingOnCommand implements ISMSCommand {
+@Qualifier("heatingOffCommand")
+public class HeatingOffCommand implements ISMSCommand {
     @Override
     public CommandResult run() {
         log.info("Executed");

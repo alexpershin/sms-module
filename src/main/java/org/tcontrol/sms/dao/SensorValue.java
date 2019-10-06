@@ -1,15 +1,16 @@
 package org.tcontrol.sms.dao;
 
 
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
 
+@Data
 @NoArgsConstructor
 public class SensorValue {
 
-    private int sensorValueId;
-    private int sensorId;
+    private String sensorId;
     private Timestamp timestamp;
     private double value;
     private Double gradient;
@@ -24,14 +25,7 @@ public class SensorValue {
     private SensorState state;
 
 
-    public SensorValue(int sensorId, Timestamp timestamp,
-                       double value) {
-        this.sensorId = sensorId;
-        this.timestamp = timestamp;
-        this.value = value;
-    }
-
-    public SensorValue(int sensorId, long time,
+    public SensorValue(String sensorId, long time,
                        double value) {
         this.sensorId = sensorId;
         this.timestamp = new Timestamp(time);
