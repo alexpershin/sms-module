@@ -18,6 +18,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @Slf4j
@@ -34,7 +36,7 @@ public class SMSProcessor {
 
     private Pattern patternPhone = Pattern.compile(".*_00_\\+([0-9]*)_00.txt");
 
-    @Scheduled(cron = "0/10 * * * * ?")
+    @Scheduled(cron = "0/30 * * * * ?")
     void inputSmsScan() {
         log.info("Scanning input SMS to process..");
         processInputFolder();
@@ -45,20 +47,38 @@ public class SMSProcessor {
         final String inputFolderName = smsConfig.getInputFolder();
         Path path = Paths.get(inputFolderName);
         try {
-            Files.list(path).filter(p -> !Files.isDirectory(p)).forEach(p -> {
+            List<Path> files;
+
+            try (Stream<Path> stream = Files.list(path)) {// to make sure that directory closed
+                files = stream.collect(Collectors.toList());
+            }
+            files.stream().filter(p -> !Files.isDirectory(p)).forEach(p -> {
                 String fileName = p.getFileName().toString();
                 Matcher matcher = patternPhone.matcher(fileName);
                 if (matcher.find()) {
                     String phoneNumber = matcher.group(1);
-                    String commandName = readCommandFromFile(p);
-                    if (commandName != null) {
-                        CommandResult result = commandExecutor.run(commandName);
-                        try {
-                            writeAnswer(fileName, phoneNumber, result, commandName);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                    boolean inList = smsConfig.getPhones().stream()
+                            .filter(phone -> phone.getPhone().equals(phoneNumber))
+                            .findFirst().isPresent();
+
+                    if (inList) {
+                        String commandName = readCommandFromFile(p);
+                        if (commandName != null) {
+                            CommandResult result = commandExecutor.run(commandName);
+                            try {
+                                writeAnswer(fileName, phoneNumber, result, commandName);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
+                }
+                //moving to result folder
+                Path resultPath = Paths.get(smsConfig.getProcessedFolder(), p.getFileName().toString());
+                try {
+                    Files.move(p, resultPath);
+                } catch (IOException e) {
+                    log.info("Error while moving file " + resultPath.toString());
                 }
             });
         } catch (IOException e) {
@@ -88,13 +108,6 @@ public class SMSProcessor {
                 command = StringUtil.trim(commandText).toUpperCase();
             } else {
                 log.info("Error while found command: {}", lines);
-            }
-            //moving to result folder
-            Path resultPath = Paths.get(smsConfig.getProcessedFolder(), filePath.getFileName().toString());
-            try {
-                Files.move(filePath, resultPath);
-            } catch (IOException e) {
-                log.info("Error while moving file " + resultPath.toString());
             }
             return command;
         } catch (IOException ex) {

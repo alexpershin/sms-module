@@ -29,3 +29,6 @@ sms-config:
     -
         phone: 79112403797
         name: MTS
+    -
+        phone: 79119378212
+        name: MTS

@@ -27,7 +27,7 @@ public class TemperatureMonitor implements ITemperatureMonitor {
     @Autowired
     private CSVStatisticsWriter csvWriter;
 
-    @Scheduled(cron = "0/15 * * * * ?")
+    @Scheduled(cron = "0 0/15 * * * ?")
     void readSensors() {
         log.info("Reading temperature sensors...");
 
