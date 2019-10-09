@@ -1,9 +1,11 @@
 package org.tcontrol.sms.commands;
 
+import com.pi4j.io.gpio.PinState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.tcontrol.sms.IRelayController;
 import org.tcontrol.sms.ISMSCommand;
 import org.tcontrol.sms.ITemperatureMonitor;
 import org.tcontrol.sms.config.SMSConfig;
@@ -23,6 +25,9 @@ public class StatusCommand implements ISMSCommand {
     @Autowired
     private SensorConfig sensorConfig;
 
+    @Autowired
+    private IRelayController relayController;
+
     @Override
     public CommandResult run() {
         Optional<String> res = temperatureMonitor.getSensorValueMap().entrySet().stream().map(t -> {
@@ -36,6 +41,10 @@ public class StatusCommand implements ISMSCommand {
             }
         }).reduce((a, b) -> a + "\n" + b);
 
+        PinState heatingState = relayController.getPinState(CommandExecutor.HEATING_PIN);
+        if (heatingState != null) {
+            res = Optional.of(res.orElse("") + "\nHeating: " + (heatingState.isHigh() ? "ON" : "OFF"));
+        }
         String text = res.orElse("status not ready");
         log.info("Executed");
         CommandResult result = new CommandResult(res.isPresent() ? STATUS.OK : STATUS.FAILURE, text);

@@ -1,5 +1,7 @@
 package org.tcontrol.sms.commands;
 
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.RaspiPin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.tcontrol.sms.ISMSCommand;
@@ -11,6 +13,8 @@ public class CommandExecutor {
         HEATING_ON,
         HEATING_OFF;
     }
+
+    public static final Pin HEATING_PIN = RaspiPin.GPIO_00;
 
     @Autowired
     ISMSCommand heatingOnCommand;

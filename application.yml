@@ -1,5 +1,6 @@
 w1DevicesPath: src/test/resources/devices
 
+dataFile: data.csv
 
 sensor-config:
   sensors:

@@ -1,5 +1,7 @@
 w1DevicesPath: /sys/bus/w1/devices
 
+dataFile: data.csv
+
 sensor-config:
     sensors:
     -
