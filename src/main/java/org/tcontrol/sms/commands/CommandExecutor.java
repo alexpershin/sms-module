@@ -11,7 +11,7 @@ public class CommandExecutor {
     public enum CommandName {
         STATUS,
         HEATING_ON,
-        HEATING_OFF;
+        HEATING_OFF
     }
 
     public static final Pin HEATING_PIN = RaspiPin.GPIO_00;

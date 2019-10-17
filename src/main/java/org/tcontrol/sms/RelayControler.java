@@ -12,7 +12,7 @@ import java.util.Map;
 @Slf4j
 public class RelayControler implements IRelayController {
     private GpioController gpio;
-    private Map<String, GpioPinDigitalOutput> pins = new HashMap<>();
+    final private Map<String, GpioPinDigitalOutput> pins = new HashMap<>();
 
     @PostConstruct
     void init() {

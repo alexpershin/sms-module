@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.tcontrol.sms.IRelayController;
 import org.tcontrol.sms.ISMSCommand;
 import org.tcontrol.sms.ITemperatureMonitor;
-import org.tcontrol.sms.config.SMSConfig;
 import org.tcontrol.sms.config.SensorConfig;
 import org.tcontrol.sms.dao.SensorValue;
 

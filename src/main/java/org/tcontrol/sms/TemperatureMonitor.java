@@ -1,6 +1,5 @@
 package org.tcontrol.sms;
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,7 +15,7 @@ import java.util.Map;
 @Component
 @Slf4j
 public class TemperatureMonitor implements ITemperatureMonitor {
-    private Map<String, SensorValue> sensorValueMap = new HashMap<>();
+    final private Map<String, SensorValue> sensorValueMap = new HashMap<>();
 
     @Autowired
     private ITemperatureReader temperatureReader;
@@ -27,7 +26,7 @@ public class TemperatureMonitor implements ITemperatureMonitor {
     @Autowired
     private CSVStatisticsWriter csvWriter;
 
-    @Scheduled(cron = "0 0/15 * * * ?")
+    @Scheduled(cron = "${sensor-config.schedule}")
     void readSensors() {
         log.info("Reading temperature sensors...");
 

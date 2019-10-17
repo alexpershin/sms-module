@@ -16,7 +16,7 @@ public class SensorValue {
     private Double gradient;
     /**
      * State of the sensor. Are not stored in the database. It should be
-     * calculated in accordance with the sensor value and the low and hight
+     * calculated in accordance with the sensor value and the low and height
      * threshold. For example when temperature inside a house is lower than low
      * threshold set to 12 degrees, the sensor state must be ALARM, also if the
      * temperature is higher than 30 degrees it must be ALARM, when temperature

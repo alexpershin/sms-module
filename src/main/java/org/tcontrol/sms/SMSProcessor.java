@@ -34,9 +34,9 @@ public class SMSProcessor {
     @Autowired
     private CommandExecutor commandExecutor;
 
-    private Pattern patternPhone = Pattern.compile(".*_00_\\+([0-9]*)_00.txt");
+    final private static Pattern patternPhone = Pattern.compile(".*_00_\\+([0-9]*)_00.txt");
 
-    @Scheduled(cron = "0/30 * * * * ?")
+    @Scheduled(cron = "${sms-config.schedule}")
     void inputSmsScan() {
         log.info("Scanning input SMS to process..");
         processInputFolder();

@@ -3,6 +3,7 @@ w1DevicesPath: src/test/resources/devices
 dataFile: data.csv
 
 sensor-config:
+  schedule: '0/15 * * * * ?'
   sensors:
     -
       id: 28-000002c7c3ee
@@ -21,7 +22,7 @@ sms-config:
     inputFolder: src/test/resources/messages/inbox
     outputFolder: src/test/resources/messages/outbox
     processedFolder: src/test/resources/messages/processed
-
+    schedule: '0/10 * * * * ?'
     phones:
     -
         phone: 79210972100

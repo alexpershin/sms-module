@@ -42,7 +42,7 @@ public class TemperatureReader implements ITemperatureReader {
     private static double readTemperatureFromFile(Path pathDeviceFile) throws IOException{
         int iniPos, endPos;
         String strTemp;
-        double tvalue = 0;
+        double tValue = 0;
         List<String> lines;
         try {
             lines = Files.readAllLines(pathDeviceFile, Charset.defaultCharset());
@@ -51,36 +51,23 @@ public class TemperatureReader implements ITemperatureReader {
                     iniPos = line.indexOf(TEMPERATURE_PREFIX) + 2;
                     endPos = line.length();
                     strTemp = line.substring(iniPos, endPos);
-                    tvalue = Double.parseDouble(strTemp) / 1000;
+                    tValue = Double.parseDouble(strTemp) / 1000;
                 }
             }
         } catch (IOException ex) {
             LOGGER.log(SEVERE, "Error while reading file " + pathDeviceFile);
             throw ex;
         }
-        return tvalue;
+        return tValue;
     }
 
     private String getW1DevicesPath() {
         return w1DevicesPath;
     }
 
-    /**
-     * @param w1DevicesPath the w1DevicesPath to set
-     */
-    public void setW1DevicesPath(String w1DevicesPath) {
-        this.w1DevicesPath = w1DevicesPath;
-    }
 
     private String getW1SensorInfoFileName() {
         return w1SensorInfoFileName;
-    }
-
-    /**
-     * @param w1SensorInfoFileName the w1SensorInfoFileName to set
-     */
-    public void setW1SensorInfoFileName(String w1SensorInfoFileName) {
-        this.w1SensorInfoFileName = w1SensorInfoFileName;
     }
 }
 

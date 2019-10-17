@@ -3,6 +3,7 @@ w1DevicesPath: /sys/bus/w1/devices
 dataFile: data.csv
 
 sensor-config:
+    schedule: '0/15 * * * * ?'
     sensors:
     -
         id: 28-000002c7c3ee
@@ -21,6 +22,7 @@ sms-config:
     inputFolder: /var/spool/gammu/inbox
     outputFolder: /var/spool/gammu/outbox
     processedFolder: /var/spool/gammu/processed
+    schedule: '0/10 * * * * ?'
 
     phones:
     -
