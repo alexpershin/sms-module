@@ -5,31 +5,35 @@ dataFile: data.csv
 sensor-config:
   schedule: '0/15 * * * * ?'
   sensors:
-    -
-      id: 28-000002c7c3ee
-      name: house
-    -
-      id: 28-000002c7d1b5
-      name: street
-    -
-      id: 28-000002c7eed3
-      name: basement
-    -
-      id: 28-0000066c6a65
-      name: case
+  - id: 28-000002c7c3ee
+    name: house
+  - id: 28-000002c7d1b5
+    name: street
+  - id: 28-000002c7eed3
+    name: basement
+  - id: 28-0000066c6a65
+    name: case
 
 sms-config:
-    inputFolder: src/test/resources/messages/inbox
-    outputFolder: src/test/resources/messages/outbox
-    processedFolder: src/test/resources/messages/processed
-    schedule: '0/10 * * * * ?'
-    phones:
-    -
-        phone: 79210972100
-        name: megafon
-    -
-        phone: 79112403797
-        name: MTS
-    -
-        phone: 79119378212
-        name: mama
+  inputFolder: src/test/resources/messages/inbox
+  outputFolder: src/test/resources/messages/outbox
+  processedFolder: src/test/resources/messages/processed
+  schedule: '0/10 * * * * ?'
+  heatingPin: GPIO_00
+  phones:
+  - phone: 79210972100
+    name: megafon
+  - phone: 79112403797
+    name: MTS
+  - phone: 79119378212
+    name: mama
+
+termostat:
+  tDay: 12.0
+  tNight: 16.0
+  delta: 0.5
+  nightBegin: 23:10:00
+  nightEnd: 7:10:00
+  schedule: '0/5 * * * * ?'
+  sensor: 28-000002c7c3ee
+  relayPin: GPIO_00

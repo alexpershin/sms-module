@@ -9,15 +9,21 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class AppConfig {
 
-   @Bean
-   @ConfigurationProperties(prefix = "sensor-config")
-   SensorConfig sensorConfig(){
-       return new SensorConfig();
-   }
+    @Bean
+    @ConfigurationProperties(prefix = "sensor-config")
+    SensorConfig sensorConfig() {
+        return new SensorConfig();
+    }
 
     @Bean
     @ConfigurationProperties(prefix = "sms-config")
-    SMSConfig smsConfig(){
+    SMSConfig smsConfig() {
         return new SMSConfig();
+    }
+
+    @Bean
+    @ConfigurationProperties(prefix = "termostat")
+    TermostatConfig termostatConfig() {
+        return new TermostatConfig();
     }
 }

@@ -1,8 +1,11 @@
 package org.tcontrol.sms.config;
 
+import com.pi4j.io.gpio.Pin;
+import com.pi4j.io.gpio.RaspiPin;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +17,12 @@ public class SMSConfig {
     private String inputFolder;
     private String outputFolder;
     private String processedFolder;
+    private String heatingPin;
+
+    @PostConstruct
+    public void postConstruct(){
+        heatingPin();
+    }
 
     @Data
     @RequiredArgsConstructor
@@ -21,5 +30,9 @@ public class SMSConfig {
     {
         private String phone;
         private String name;
+    }
+
+    public Pin heatingPin(){
+        return RaspiPin.getPinByName(heatingPin);
     }
 }

@@ -27,7 +27,7 @@ public class TemperatureMonitor implements ITemperatureMonitor {
     private CSVStatisticsWriter csvWriter;
 
     @Scheduled(cron = "${sensor-config.schedule}")
-    void readSensors() {
+    public void readSensors() {
         log.info("Reading temperature sensors...");
 
         int successCount = 0;
