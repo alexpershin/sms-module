@@ -72,7 +72,7 @@ public class RelayControler implements IRelayController {
         SensorValue sensorValue = new SensorValue();
         sensorValue.setSensorId(pin.getName());
 
-        // turn off/on gpio pin #17
+        // turn off/heatingOn gpio pin #17
         if (pinState.isLow()) {
             pin.low();
             sensorValue.setValue(1.0);
