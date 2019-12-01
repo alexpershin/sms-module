@@ -1,6 +1,7 @@
 package org.tcontrol.sms.commands;
 
 import com.pi4j.io.gpio.PinState;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,8 +12,8 @@ import org.tcontrol.sms.ISMSCommand;
 @Component
 @Slf4j
 @Qualifier("heatingOffCommand")
+@AllArgsConstructor
 public class HeatingOffCommand implements ISMSCommand {
-    @Autowired
     private IRelayController relayController;
 
     @Override

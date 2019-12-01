@@ -22,8 +22,8 @@ public class AppConfig {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "termostat")
-    TermostatConfig termostatConfig() {
-        return new TermostatConfig();
+    @ConfigurationProperties(prefix = "thermostat")
+    ThermostatConfig thermostatConfig() {
+        return new ThermostatConfig();
     }
 }

@@ -35,7 +35,7 @@ sms-config:
         phone: 79119378212
         name: MTS
 
-termostat:
+thermostat:
     tDay: 12.0
     tNight: 16.0
     delta: 0.5

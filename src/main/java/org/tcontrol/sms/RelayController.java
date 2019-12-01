@@ -12,13 +12,16 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class RelayControler implements IRelayController {
+public class RelayController implements IRelayController {
 
-    @Autowired
-    CSVStatisticsWriter statisticsWriter;
+    private CSVStatisticsWriter statisticsWriter;
 
     private GpioController gpio;
     final private Map<String, GpioPinDigitalOutput> pins = new HashMap<>();
+
+    public RelayController(CSVStatisticsWriter statisticsWriter) {
+        this.statisticsWriter = statisticsWriter;
+    }
 
     @PostConstruct
     void init() {

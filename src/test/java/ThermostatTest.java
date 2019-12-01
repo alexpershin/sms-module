@@ -4,7 +4,7 @@ import com.pi4j.io.gpio.RaspiPin;
 import org.junit.Before;
 import org.junit.Test;
 import org.tcontrol.sms.*;
-import org.tcontrol.sms.config.TermostatConfig;
+import org.tcontrol.sms.config.ThermostatConfig;
 import org.tcontrol.sms.dao.SensorValue;
 
 import java.time.LocalDate;
@@ -16,26 +16,26 @@ import java.util.Map;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
-public class TermostatTest {
+public class ThermostatTest {
 
-    public static final String GPIO_00 = "GPIO_00";
-    public static final String SENSOR = "abc";
-    private Termostat termostat;
-    private TermostatConfig termostatConfig;
+    private static final String GPIO_00 = "GPIO_00";
+    private static final String SENSOR = "abc";
+    private Thermostat thermostat;
+    private ThermostatConfig thermostatConfig;
     private ITemperatureMonitor temperatureMonitor;
     private IRelayController relayController;
     private ITimer timer;
 
     @Before
     public void before() {
-        termostatConfig = new TermostatConfig();
-        termostatConfig.setDelta(0.5f);
-        termostatConfig.setNightBegin(60 * 60 * 23);
-        termostatConfig.setNightEnd(60 * 60 * 7);
-        termostatConfig.setSensor(SENSOR);
-        termostatConfig.setTDay(12.0f);
-        termostatConfig.setTNight(16.0f);
-        termostatConfig.setRelayPin(GPIO_00);
+        thermostatConfig = new ThermostatConfig();
+        thermostatConfig.setDelta(0.5f);
+        thermostatConfig.setNightBegin(60 * 60 * 23);
+        thermostatConfig.setNightEnd(60 * 60 * 7);
+        thermostatConfig.setSensor(SENSOR);
+        thermostatConfig.setTDay(12.0f);
+        thermostatConfig.setTNight(16.0f);
+        thermostatConfig.setRelayPin(GPIO_00);
 
         temperatureMonitor = new ITemperatureMonitor() {
 
@@ -82,111 +82,113 @@ public class TermostatTest {
         };
 
 
-        termostat = new Termostat();
-        termostat.setRelayController(relayController);
-        termostat.setTemperatureMonitor(temperatureMonitor);
-        termostat.setTermostatConfig(termostatConfig);
+        thermostat = new Thermostat(
+                thermostatConfig,
+                temperatureMonitor,
+                relayController,
+                () -> LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0))
+       );
 
     }
 
     @Test
     public void testMidDay() {
         timer = () -> LocalDateTime.of(LocalDate.now(), LocalTime.of(12, 0));
-        termostat.setTimer(timer);
+        thermostat.setTimer(timer);
 
-        termostat.checkTemperature();
+        thermostat.checkTemperature();
 
-        assertFalse(termostat.isHeatingOn());
+        assertFalse(thermostat.isHeatingOn());
     }
 
     @Test
     public void testMidNight() {
         timer = () -> LocalDateTime.of(LocalDate.now(), LocalTime.of(3, 0));
-        termostat.setTimer(timer);
+        thermostat.setTimer(timer);
 
-        termostat.checkTemperature();
+        thermostat.checkTemperature();
 
-        assertTrue(termostat.isHeatingOn());
+        assertTrue(thermostat.isHeatingOn());
     }
 
     @Test
     public void testSwitch() {
-        termostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(3, 0)));
-        Pin heatingPin = RaspiPin.getPinByName(termostatConfig.getRelayPin());
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(3, 0)));
+        Pin heatingPin = RaspiPin.getPinByName(thermostatConfig.getRelayPin());
 
-        termostat.checkTemperature();
-        assertTrue(termostat.isHeatingOn());
+        thermostat.checkTemperature();
+        assertTrue(thermostat.isHeatingOn());
         assertTrue(relayController.getPinState(heatingPin).isHigh());
 
         SensorValue v = temperatureMonitor.getSensorValueMap().get(SENSOR);
         v.setSensorId(SENSOR);
         v.setValue(15.0);
 
-        termostat.checkTemperature();
-        assertTrue(termostat.isHeatingOn());
+        thermostat.checkTemperature();
+        assertTrue(thermostat.isHeatingOn());
         assertTrue(relayController.getPinState(heatingPin).isHigh());
 
         v.setValue(16.6);
 
-        termostat.checkTemperature();
-        assertFalse(termostat.isHeatingOn());
+        thermostat.checkTemperature();
+        assertFalse(thermostat.isHeatingOn());
         assertFalse(relayController.getPinState(heatingPin).isHigh());
 
-        termostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(4, 0)));
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(4, 0)));
         v.setValue(16.2);
-        termostat.checkTemperature();
-        assertFalse(termostat.isHeatingOn());
+        thermostat.checkTemperature();
+        assertFalse(thermostat.isHeatingOn());
         assertFalse(relayController.getPinState(heatingPin).isHigh());
 
-        termostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(5, 0)));
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(5, 0)));
         v.setValue(15.6);
-        termostat.checkTemperature();
-        assertFalse(termostat.isHeatingOn());
+        thermostat.checkTemperature();
+        assertFalse(thermostat.isHeatingOn());
         assertFalse(relayController.getPinState(heatingPin).isHigh());
 
-        termostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(5, 30)));
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(5, 30)));
         v.setValue(15.5);
-        termostat.checkTemperature();
-        assertTrue(termostat.isHeatingOn());
+        thermostat.checkTemperature();
+        assertTrue(thermostat.isHeatingOn());
         assertTrue(relayController.getPinState(heatingPin).isHigh());
 
-        termostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(7, 00)));
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(7, 0)));
         v.setValue(15.5);
-        termostat.checkTemperature();
-        assertFalse(termostat.isHeatingOn());
+        thermostat.checkTemperature();
+        assertFalse(thermostat.isHeatingOn());
 
-        termostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(15, 00)));
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(15, 0)));
         v.setValue(11.5);
-        termostat.checkTemperature();
-        assertTrue(termostat.isHeatingOn());
+        thermostat.checkTemperature();
+        assertTrue(thermostat.isHeatingOn());
         assertTrue(relayController.getPinState(heatingPin).isHigh());
 
-        termostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 00)));
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 0)));
         v.setValue(12.8);
-        termostat.checkTemperature();
-        assertFalse(termostat.isHeatingOn());
+        thermostat.checkTemperature();
+        assertFalse(thermostat.isHeatingOn());
         assertFalse(relayController.getPinState(heatingPin).isHigh());
     }
 
     @Test
     public void testOnOff() {
-        termostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(3, 0)));
-        Pin heatingPin = RaspiPin.getPinByName(termostatConfig.getRelayPin());
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(3, 0)));
+        Pin heatingPin = RaspiPin.getPinByName(thermostatConfig.getRelayPin());
 
-        termostat.checkTemperature();
-        assertTrue(termostat.isHeatingOn());
+        thermostat.checkTemperature();
+        assertTrue(thermostat.isHeatingOn());
         assertTrue(relayController.getPinState(heatingPin).isHigh());
 
-        termostat.changeOn(false);
+        thermostat.changeOn(false);
         assertFalse(relayController.getPinState(heatingPin).isHigh());
 
-        termostat.checkTemperature();
+        thermostat.checkTemperature();
         assertFalse(relayController.getPinState(heatingPin).isHigh());
 
-        termostat.changeOn(true);
+        thermostat.changeOn(true);
         assertFalse(relayController.getPinState(heatingPin).isHigh());
 
-        termostat.checkTemperature();
+        thermostat.checkTemperature();
         assertTrue(relayController.getPinState(heatingPin).isHigh());
     }
 }

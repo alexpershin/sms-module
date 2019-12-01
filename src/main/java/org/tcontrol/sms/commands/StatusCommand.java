@@ -1,6 +1,7 @@
 package org.tcontrol.sms.commands;
 
 import com.pi4j.io.gpio.PinState;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,14 +18,13 @@ import java.util.Optional;
 @Component
 @Slf4j
 @Qualifier("statusCommand")
+@AllArgsConstructor
 public class StatusCommand implements ISMSCommand {
-    @Autowired
+
     private ITemperatureMonitor temperatureMonitor;
 
-    @Autowired
     private SensorConfig sensorConfig;
 
-    @Autowired
     private IRelayController relayController;
 
     @Override
@@ -33,11 +33,7 @@ public class StatusCommand implements ISMSCommand {
             SensorValue value = t.getValue();
             String sensorId = value.getSensorId();
             Optional<SensorConfig.SensorConfiguration> sc = sensorConfig.getSensors().stream().filter(sensor -> sensor.getId().equals(sensorId)).findFirst();
-            if (sc.isPresent()) {
-                return sc.get().getName() + ": " + value.getValue();
-            } else {
-                return "";
-            }
+            return sc.map(sensorConfiguration -> sensorConfiguration.getName() + ": " + value.getValue()).orElse("");
         }).reduce((a, b) -> a + "\n" + b);
 
         PinState heatingState = relayController.getPinState(CommandExecutor.HEATING_PIN);
@@ -46,7 +42,6 @@ public class StatusCommand implements ISMSCommand {
         }
         String text = res.orElse("status not ready");
         log.info("Executed");
-        CommandResult result = new CommandResult(res.isPresent() ? STATUS.OK : STATUS.FAILURE, text);
-        return result;
+        return new CommandResult(res.isPresent() ? STATUS.OK : STATUS.FAILURE, text);
     }
 }

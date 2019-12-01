@@ -1,6 +1,7 @@
 package org.tcontrol.sms;
 
 import com.pi4j.util.StringUtil;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,15 +24,13 @@ import java.util.stream.Stream;
 
 @Component
 @Slf4j
+@AllArgsConstructor
 public class SMSProcessor {
 
-    @Autowired
     ITemperatureMonitor temperatureMonitor;
 
-    @Autowired
     private SMSConfig smsConfig;
 
-    @Autowired
     private CommandExecutor commandExecutor;
 
     final private static Pattern patternPhone = Pattern.compile(".*_00_\\+([0-9]*)_00.txt");
@@ -58,8 +57,7 @@ public class SMSProcessor {
                 if (matcher.find()) {
                     String phoneNumber = matcher.group(1);
                     boolean inList = smsConfig.getPhones().stream()
-                            .filter(phone -> phone.getPhone().equals(phoneNumber))
-                            .findFirst().isPresent();
+                            .anyMatch(phone -> phone.getPhone().equals(phoneNumber));
 
                     if (inList) {
                         String commandName = readCommandFromFile(p);

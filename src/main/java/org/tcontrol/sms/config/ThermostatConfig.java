@@ -10,7 +10,7 @@ import java.time.LocalTime;
 
 @Data
 @RequiredArgsConstructor
-public class TermostatConfig {
+public class ThermostatConfig {
     private float tDay;
     private float tNight;
     private float delta;
@@ -20,7 +20,7 @@ public class TermostatConfig {
     private String relayPin;
 
     @PostConstruct
-    public void postconstruct(){
+    public void postConstruct(){
         nightBegin();
         nightEnd();
         relayPin();

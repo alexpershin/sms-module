@@ -1,16 +1,15 @@
 package org.tcontrol.sms;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.tcontrol.sms.config.TermostatConfig;
+import org.tcontrol.sms.config.ThermostatConfig;
 
 import java.time.*;
 
 @Component
+@AllArgsConstructor
 public class Timer implements ITimer {
-    @Autowired
-    private TermostatConfig termostatConfig;
+    private ThermostatConfig thermostatConfig;
 
     @Override
     public LocalDateTime getCurrentTime(){

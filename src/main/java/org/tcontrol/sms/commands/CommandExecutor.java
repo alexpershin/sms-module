@@ -2,35 +2,36 @@ package org.tcontrol.sms.commands;
 
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.tcontrol.sms.ISMSCommand;
 
 @Component
+@AllArgsConstructor
 public class CommandExecutor {
     public enum CommandName {
         STATUS,
         HEATING_ON,
-        HEATING_OFF
+        HEATING_OFF,
+        THERM_ON,
+        THERM_OFF,
+        SET_TEMP
     }
 
     public static final Pin HEATING_PIN = RaspiPin.GPIO_00;
 
-    @Autowired
-    ISMSCommand heatingOnCommand;
+    private ISMSCommand heatingOnCommand;
 
-    @Autowired
-    ISMSCommand heatingOffCommand;
+    private ISMSCommand heatingOffCommand;
 
-    @Autowired
-    ISMSCommand statusCommand;
-
+    private ISMSCommand statusCommand;
 
     public CommandResult run(String name) {
         final CommandName commandName;
         try {
             commandName = CommandName.valueOf(name);
-        }catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return new CommandResult(STATUS.FAILURE, "unknown command: " + name);
         }
         ISMSCommand command = null;
@@ -46,6 +47,6 @@ public class CommandExecutor {
                 break;
 
         }
-        return command.run();
+        return command != null ? command.run() : null;
     }
 }
