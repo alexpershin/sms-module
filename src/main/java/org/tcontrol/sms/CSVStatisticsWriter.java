@@ -17,14 +17,16 @@ public class CSVStatisticsWriter {
     @Value("${dataFile}")
     private String dataFile;
 
-    public void write(SensorValue[] values){
+    public void write(SensorValue[] values) {
         boolean fileExist = Files.exists(Paths.get(dataFile));
         try (CSVPrinter printer = new CSVPrinter(new FileWriter(dataFile, true), CSVFormat.EXCEL)) {
-            if(!fileExist){
+            if (!fileExist) {
                 printer.printRecord("sensorId", "timestamp", "value");
             }
-            for(SensorValue value:values) {
-                printer.printRecord(value.getSensorId(), value.getTimestamp(), value.getValue());
+            for (SensorValue value : values) {
+                if (value != null) {
+                    printer.printRecord(value.getSensorId(), value.getTimestamp(), value.getValue());
+                }
             }
         } catch (IOException ex) {
             ex.printStackTrace();

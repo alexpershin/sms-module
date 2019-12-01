@@ -1,24 +1,24 @@
-w1DevicesPath: src/test/resources/devices
+w1DevicesPath: /sys/bus/w1/devices
 
 dataFile: data.csv
 
 sensor-config:
-  schedule: '0/15 * * * * ?'
+  schedule: '0 0/15 * * * ?'
   sensors:
   - id: 28-000002c7c3ee
-    name: house
+    name: дом
   - id: 28-000002c7d1b5
-    name: street
+    name: улица
   - id: 28-000002c7eed3
-    name: basement
+    name: подвал
   - id: 28-0000066c6a65
-    name: case
+    name: крыльцо щит
 
 sms-config:
-  inputFolder: src/test/resources/messages/inbox
-  outputFolder: src/test/resources/messages/outbox
-  processedFolder: src/test/resources/messages/processed
-  schedule: '0/10 * * * * ?'
+  inputFolder: /var/spool/gammu/inbox
+  outputFolder: /var/spool/gammu/outbox
+  processedFolder: /var/spool/gammu/processed
+  schedule: '0/15 * * * * ?'
   heatingPin: GPIO_00
   phones:
   - phone: 79210972100
@@ -34,6 +34,6 @@ termostat:
   delta: 0.5
   nightBegin: 23:10:00
   nightEnd: 7:10:00
-  schedule: '0/5 * * * * ?'
+  schedule: '0 0/5 * * * ?'
   sensor: 28-000002c7c3ee
   relayPin: GPIO_00
