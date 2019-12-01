@@ -15,6 +15,7 @@ import java.util.Map;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 public class ThermostatTest {
 
@@ -166,6 +167,33 @@ public class ThermostatTest {
         thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(18, 0)));
         v.setValue(12.8);
         thermostat.checkTemperature();
+        assertFalse(thermostat.isHeatingOn());
+        assertFalse(relayController.getPinState(heatingPin).isHigh());
+
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 0)));
+        v.setValue(12.1);
+        thermostat.checkTemperature();
+        assertFalse(thermostat.isHeatingOn());
+        assertFalse(relayController.getPinState(heatingPin).isHigh());
+
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(00, 10)));
+        v.setValue(12.1);
+        thermostat.checkTemperature();
+        assertEquals(16.0, thermostat.getMediumT(), 0.01);
+        assertTrue(thermostat.isHeatingOn());
+        assertTrue(relayController.getPinState(heatingPin).isHigh());
+
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(06, 50)));
+        v.setValue(15.2);
+        thermostat.checkTemperature();
+        assertEquals(16.0, thermostat.getMediumT(), 0.01);
+        assertTrue(thermostat.isHeatingOn());
+        assertTrue(relayController.getPinState(heatingPin).isHigh());
+
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(07, 10)));
+        v.setValue(15.3);
+        thermostat.checkTemperature();
+        assertEquals(12.0, thermostat.getMediumT(), 0.01);
         assertFalse(thermostat.isHeatingOn());
         assertFalse(relayController.getPinState(heatingPin).isHigh());
     }
