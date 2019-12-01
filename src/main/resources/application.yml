@@ -1,4 +1,4 @@
-w1DevicesPath: /sys/bus/w1/devices
+w1DevicesPath: resources/devices
 
 dataFile: data.csv
 
@@ -23,7 +23,7 @@ sms-config:
     outputFolder: /var/spool/gammu/outbox
     processedFolder: /var/spool/gammu/processed
     schedule: '0/10 * * * * ?'
-    heatingPin: GPIO_00
+    heatingPin: 'GPIO 0'
     phones:
     -
         phone: 79210972100
@@ -43,4 +43,4 @@ thermostat:
     nightEnd: 7:10:00
     schedule: '0/5 * * * * ?'
     sensor: 28-000002c7c3ee
-    relayPin: GPIO_00
+    relayPin: 'GPIO 0'

@@ -10,6 +10,7 @@ import org.tcontrol.sms.IRelayController;
 import org.tcontrol.sms.ISMSCommand;
 import org.tcontrol.sms.ITemperatureMonitor;
 import org.tcontrol.sms.IThermostat;
+import org.tcontrol.sms.config.SMSConfig;
 import org.tcontrol.sms.config.SensorConfig;
 import org.tcontrol.sms.dao.SensorValue;
 
@@ -32,6 +33,8 @@ public class StatusCommand implements ISMSCommand {
 
     private IThermostat thermostat;
 
+    private SMSConfig smsConfig;
+
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
 
     @Override
@@ -43,7 +46,7 @@ public class StatusCommand implements ISMSCommand {
             return sc.map(sensorConfiguration -> sensorConfiguration.getName() + ": " + value.getValue()).orElse("");
         }).reduce((a, b) -> a + "\n" + b);
 
-        PinState heatingState = relayController.getPinState(CommandExecutor.HEATING_PIN);
+        PinState heatingState = relayController.getPinState(smsConfig.heatingPin());
         if (heatingState != null) {
             res = Optional.of(res.orElse("") + "\nHeating: " + (heatingState.isHigh() ? "ON" : "OFF"));
         }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.tcontrol.sms.IRelayController;
 import org.tcontrol.sms.ISMSCommand;
 import org.tcontrol.sms.IThermostat;
+import org.tcontrol.sms.config.SMSConfig;
 
 @Component
 @Slf4j
@@ -18,10 +19,11 @@ public class HeatingOffCommand implements ISMSCommand {
     private IRelayController relayController;
     private IThermostat thermostat;
     private HeatingOnCommand heatingOnCommand;
+    private SMSConfig smsConfig;
 
     @Override
     public CommandResult run() {
-        PinState result = relayController.turnOffRelay(CommandExecutor.HEATING_PIN);
+        PinState result = relayController.turnOffRelay(smsConfig.heatingPin());
         Boolean prevThermostatState = heatingOnCommand.getPrevThermostatState();
         if(prevThermostatState !=null){
             thermostat.changeOn(prevThermostatState);

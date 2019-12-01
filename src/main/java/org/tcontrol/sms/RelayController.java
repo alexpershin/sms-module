@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import org.tcontrol.sms.dao.SensorValue;
 
 import javax.annotation.PostConstruct;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,7 +75,8 @@ public class RelayController implements IRelayController {
         log.info("GPIO state was: " + pin.getState());
 
         SensorValue sensorValue = new SensorValue();
-        sensorValue.setSensorId(pin.getName());
+        sensorValue.setSensorId("" + controlPin.getAddress());
+        sensorValue.setTimestamp(new Timestamp(System.currentTimeMillis()));
 
         // turn off/heatingOn gpio pin #17
         if (pinState.isLow()) {

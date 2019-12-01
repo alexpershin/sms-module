@@ -19,13 +19,15 @@ public class CommandExecutor {
         SET_TEMP
     }
 
-    public static final Pin HEATING_PIN = RaspiPin.GPIO_00;
-
     private ISMSCommand heatingOnCommand;
 
     private ISMSCommand heatingOffCommand;
 
     private ISMSCommand statusCommand;
+
+    private ISMSCommand thermostatOnCommand;
+
+    private ISMSCommand thermostatOffCommand;
 
     public CommandResult run(String name) {
         final CommandName commandName;
@@ -45,7 +47,12 @@ public class CommandExecutor {
             case HEATING_OFF:
                 command = heatingOffCommand;
                 break;
-
+            case THERM_ON:
+                command = thermostatOnCommand;
+                break;
+            case THERM_OFF:
+                command = thermostatOffCommand;
+                break;
         }
         CommandResult result = command != null ? command.run() : null;
 

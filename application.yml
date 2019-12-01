@@ -6,20 +6,20 @@ sensor-config:
   schedule: '0 0/15 * * * ?'
   sensors:
   - id: 28-000002c7c3ee
-    name: дом
+    name: house
   - id: 28-000002c7d1b5
-    name: улица
+    name: street
   - id: 28-000002c7eed3
-    name: подвал
+    name: basement
   - id: 28-0000066c6a65
-    name: крыльцо щит
+    name: case
 
 sms-config:
   inputFolder: /var/spool/gammu/inbox
   outputFolder: /var/spool/gammu/outbox
   processedFolder: /var/spool/gammu/processed
   schedule: '0/15 * * * * ?'
-  heatingPin: GPIO_00
+  heatingPin: 'GPIO 0'
   phones:
   - phone: 79210972100
     name: megafon
@@ -36,4 +36,4 @@ termostat:
   nightEnd: 7:10:00
   schedule: '0 0/5 * * * ?'
   sensor: 28-000002c7c3ee
-  relayPin: GPIO_00
+  relayPin: 'GPIO 0'

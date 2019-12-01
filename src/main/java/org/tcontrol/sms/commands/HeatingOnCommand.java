@@ -11,6 +11,7 @@ import org.tcontrol.sms.IRelayController;
 import org.tcontrol.sms.ISMSCommand;
 import org.tcontrol.sms.IThermostat;
 import org.tcontrol.sms.Thermostat;
+import org.tcontrol.sms.config.SMSConfig;
 
 @Component
 @Slf4j
@@ -21,21 +22,27 @@ public class HeatingOnCommand implements ISMSCommand {
 
     private IThermostat thermostat;
 
+    private SMSConfig smsConfig;
+
     @Getter
     private Boolean prevThermostatState;
 
-    public HeatingOnCommand(IRelayController relayController, IThermostat thermostat) {
+    public HeatingOnCommand(IRelayController relayController,
+                            IThermostat thermostat,
+                            SMSConfig smsConfig) {
         this.relayController = relayController;
         this.thermostat = thermostat;
+        this.smsConfig = smsConfig;
     }
 
     @Override
     public CommandResult run() {
         prevThermostatState = thermostat.isOn();
 
-        PinState result = relayController.turnOnRelay(CommandExecutor.HEATING_PIN);
-
         thermostat.changeOn(false);
+
+        PinState result = relayController.turnOnRelay(smsConfig.heatingPin());
+
 
         log.info("Executed");
         return new CommandResult(STATUS.OK, "heating is " + (result.isHigh() ? "ON" : "OFF"));

@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.tcontrol.sms.commands.CommandExecutor;
 import org.tcontrol.sms.config.ThermostatConfig;
 import org.tcontrol.sms.dao.SensorValue;
 
@@ -75,7 +74,7 @@ public class Thermostat implements IThermostat {
             }
 
 
-            Pin heatingPin = CommandExecutor.HEATING_PIN;
+            Pin heatingPin = thermostatConfig.relayPin();
 
             PinState oldState = relayController.getPinState(heatingPin);
             if (oldState == null || oldState.isHigh() != heatingOn) {
@@ -95,8 +94,7 @@ public class Thermostat implements IThermostat {
     public void changeOn(boolean v) {
         if (!v && on) {
             this.on = false;
-            Pin relayPin = RaspiPin.getPinByName(thermostatConfig.getRelayPin());
-            relayController.turnOffRelay(relayPin);
+            relayController.turnOffRelay(thermostatConfig.relayPin());
             log.info("Termostat's relay switched off");
         } else {
             this.on = v;

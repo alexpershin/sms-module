@@ -9,6 +9,7 @@ import org.tcontrol.sms.ITimer;
 import org.tcontrol.sms.Thermostat;
 import org.tcontrol.sms.commands.CommandResult;
 import org.tcontrol.sms.commands.StatusCommand;
+import org.tcontrol.sms.config.SMSConfig;
 import org.tcontrol.sms.config.SensorConfig;
 import org.tcontrol.sms.config.ThermostatConfig;
 import org.tcontrol.sms.dao.SensorValue;
@@ -106,7 +107,8 @@ public class StatusCommandTest {
 
         sensorConfig.setSensors(Arrays.asList(sensorConfiguration));
 
-        statusCommand = new StatusCommand(temperatureMonitor, sensorConfig, relayController, thermostat);
+        statusCommand = new StatusCommand(temperatureMonitor, sensorConfig,
+                relayController, thermostat, new SMSConfig());
 
     }
 

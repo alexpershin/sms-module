@@ -10,6 +10,7 @@ import org.tcontrol.sms.commands.CommandResult;
 import org.tcontrol.sms.commands.HeatingOffCommand;
 import org.tcontrol.sms.commands.HeatingOnCommand;
 import org.tcontrol.sms.commands.StatusCommand;
+import org.tcontrol.sms.config.SMSConfig;
 import org.tcontrol.sms.config.SensorConfig;
 import org.tcontrol.sms.config.ThermostatConfig;
 
@@ -35,8 +36,11 @@ public class HeatingOnOffCommandsTest {
 
     @Test
     public void thermostatWasOnTest(){
-        HeatingOnCommand heatingOnCommand = new HeatingOnCommand(relayController, thermostat);
-        ISMSCommand heatingOffCommand = new HeatingOffCommand(relayController, thermostat, heatingOnCommand);
+        SMSConfig smsConfig = new SMSConfig();
+        HeatingOnCommand heatingOnCommand =
+                new HeatingOnCommand(relayController, thermostat, smsConfig);
+        ISMSCommand heatingOffCommand =
+                new HeatingOffCommand(relayController, thermostat, heatingOnCommand, smsConfig);
 
         thermostat.changeOn(true);
         assertTrue(thermostat.isOn());
@@ -54,11 +58,13 @@ public class HeatingOnOffCommandsTest {
         thermostat.changeOn(false);
     }
 
-
     @Test
     public void thermostatWasOffTest(){
-        HeatingOnCommand heatingOnCommand = new HeatingOnCommand(relayController, thermostat);
-        ISMSCommand heatingOffCommand = new HeatingOffCommand(relayController, thermostat, heatingOnCommand);
+        SMSConfig smsConfig = new SMSConfig();
+        HeatingOnCommand heatingOnCommand =
+                new HeatingOnCommand(relayController, thermostat, smsConfig);
+        ISMSCommand heatingOffCommand =
+                new HeatingOffCommand(relayController, thermostat, heatingOnCommand, smsConfig);
 
         thermostat.changeOn(false);
         assertFalse(thermostat.isOn());
@@ -72,6 +78,5 @@ public class HeatingOnOffCommandsTest {
         assertNotNull(result);
 
         assertFalse(thermostat.isOn());
-
     }
 }
