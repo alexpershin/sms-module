@@ -13,6 +13,8 @@ import org.tcontrol.sms.IThermostat;
 import org.tcontrol.sms.config.SensorConfig;
 import org.tcontrol.sms.dao.SensorValue;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 
@@ -30,6 +32,8 @@ public class StatusCommand implements ISMSCommand {
 
     private IThermostat thermostat;
 
+    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+
     @Override
     public CommandResult run() {
         Optional<String> res = temperatureMonitor.getSensorValueMap().entrySet().stream().map(t -> {
@@ -46,7 +50,8 @@ public class StatusCommand implements ISMSCommand {
         res = Optional.of(
                 res.orElse("")
                         + "\nThermostat(" + thermostat.getMediumT() + "): "
-                        + (thermostat.isOn() ? "ON" : "OFF"));
+                        + (thermostat.isOn() ? "ON" : "OFF")
+                        + "\n" + simpleDateFormat.format(new Date()));
 
         String text = res.orElse("status not ready");
         log.info("Executed");

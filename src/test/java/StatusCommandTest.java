@@ -118,7 +118,7 @@ public class StatusCommandTest {
         thermostat.checkTemperature();
 
         CommandResult result = statusCommand.run();
-        assertTrue(result.getMessage().endsWith("Thermostat(12.0): ON"));
+        assertTrue(result.getMessage().contains("Thermostat(12.0): ON"));
         //System.out.println(result.getMessage());
     }
 }
