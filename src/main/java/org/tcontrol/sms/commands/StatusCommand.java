@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.tcontrol.sms.IRelayController;
 import org.tcontrol.sms.ISMSCommand;
 import org.tcontrol.sms.ITemperatureMonitor;
+import org.tcontrol.sms.IThermostat;
 import org.tcontrol.sms.config.SensorConfig;
 import org.tcontrol.sms.dao.SensorValue;
 
@@ -27,6 +28,8 @@ public class StatusCommand implements ISMSCommand {
 
     private IRelayController relayController;
 
+    private IThermostat thermostat;
+
     @Override
     public CommandResult run() {
         Optional<String> res = temperatureMonitor.getSensorValueMap().entrySet().stream().map(t -> {
@@ -40,6 +43,11 @@ public class StatusCommand implements ISMSCommand {
         if (heatingState != null) {
             res = Optional.of(res.orElse("") + "\nHeating: " + (heatingState.isHigh() ? "ON" : "OFF"));
         }
+        res = Optional.of(
+                res.orElse("")
+                        + "\nThermostat(" + thermostat.getMediumT() + "): "
+                        + (thermostat.isOn() ? "ON" : "OFF"));
+
         String text = res.orElse("status not ready");
         log.info("Executed");
         return new CommandResult(res.isPresent() ? STATUS.OK : STATUS.FAILURE, text);

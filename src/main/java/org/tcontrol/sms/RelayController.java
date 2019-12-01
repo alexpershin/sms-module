@@ -78,10 +78,10 @@ public class RelayController implements IRelayController {
         // turn off/heatingOn gpio pin #17
         if (pinState.isLow()) {
             pin.low();
-            sensorValue.setValue(1.0);
+            sensorValue.setValue(0.0);
         } else if (pinState.isHigh()) {
             pin.high();
-            sensorValue.setValue(0.0);
+            sensorValue.setValue(1.0);
         }
         statisticsWriter.write(new SensorValue[]{sensorValue});
 

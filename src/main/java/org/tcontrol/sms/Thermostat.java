@@ -18,7 +18,7 @@ import java.time.LocalTime;
 
 @Component
 @Slf4j
-public class Thermostat {
+public class Thermostat implements IThermostat {
     @Setter
     private ThermostatConfig thermostatConfig;
 
@@ -37,6 +37,9 @@ public class Thermostat {
     @Getter
     boolean on = true;
 
+    @Getter
+    float mediumT;
+
     public Thermostat(ThermostatConfig thermostatConfig,
                       ITemperatureMonitor temperatureMonitor,
                       IRelayController relayController,
@@ -47,6 +50,8 @@ public class Thermostat {
         this.timer = timer;
     }
 
+
+    @Override
     @Scheduled(cron = "${thermostat.schedule}")
     public void checkTemperature() {
 
@@ -54,7 +59,7 @@ public class Thermostat {
             return;
         }
 
-        float mediumT = night() ? thermostatConfig.getTNight() : thermostatConfig.getTDay();
+        mediumT = night() ? thermostatConfig.getTNight() : thermostatConfig.getTDay();
 
         SensorValue sensorValue = temperatureMonitor.getSensorValueMap().get(thermostatConfig.getSensor());
         if (sensorValue != null) {
@@ -86,6 +91,7 @@ public class Thermostat {
         }
     }
 
+    @Override
     public void changeOn(boolean v) {
         if (!v && on) {
             this.on = false;

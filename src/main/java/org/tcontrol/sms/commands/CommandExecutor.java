@@ -47,6 +47,8 @@ public class CommandExecutor {
                 break;
 
         }
-        return command != null ? command.run() : null;
+        CommandResult result = command != null ? command.run() : null;
+
+        return result;
     }
 }
