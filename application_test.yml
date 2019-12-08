@@ -1,4 +1,4 @@
-w1DevicesPath: resources/devices
+w1DevicesPath: src/test/resources/devices
 
 dataFile: data.csv
 
@@ -20,13 +20,14 @@ sms-config:
   processedFolder: src/test/resources/messages/processed
   schedule: '0/10 * * * * ?'
   heatingPin: 'GPIO 0'
+  forwardingPhone: 79210972100
   phones:
   - phone: 79210972100
     name: megafon
   - phone: 79112403797
     name: MTS
   - phone: 79119378212
-    name: MTS
+    name: mama
 
 thermostat:
   tDay: 12.0
@@ -34,6 +35,6 @@ thermostat:
   delta: 0.5
   nightBegin: 23:10:00
   nightEnd: 7:10:00
-  schedule: '0/5 * * * * ?'
+  schedule: '0 0/5 * * * ?'
   sensor: 28-000002c7c3ee
   relayPin: 'GPIO 0'

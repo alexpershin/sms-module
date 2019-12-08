@@ -18,6 +18,7 @@ public class SMSConfig {
     private String outputFolder;
     private String processedFolder;
     private String heatingPin;
+    private String forwardingPhone;
 
     @PostConstruct
     public void postConstruct(){

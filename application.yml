@@ -20,6 +20,7 @@ sms-config:
   processedFolder: /var/spool/gammu/processed
   schedule: '0/15 * * * * ?'
   heatingPin: 'GPIO 0'
+  forwardingPhone: 79210972100
   phones:
   - phone: 79210972100
     name: megafon

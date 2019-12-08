@@ -3,7 +3,6 @@ package org.tcontrol.sms;
 import com.pi4j.util.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.tcontrol.sms.commands.CommandResult;
@@ -27,8 +26,6 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public class SMSProcessor {
 
-    ITemperatureMonitor temperatureMonitor;
-
     private SMSConfig smsConfig;
 
     private CommandExecutor commandExecutor;
@@ -38,63 +35,86 @@ public class SMSProcessor {
     @Scheduled(cron = "${sms-config.schedule}")
     void inputSmsScan() {
         log.info("Scanning input SMS to process..");
-        processInputFolder();
+        processInputFolderSMS();
         log.info("Input SMS processing completed");
     }
 
-    private void processInputFolder() {
+    private void processInputFolderSMS() {
         final String inputFolderName = smsConfig.getInputFolder();
         Path path = Paths.get(inputFolderName);
-        try {
-            List<Path> files;
 
-            try (Stream<Path> stream = Files.list(path)) {// to make sure that directory closed
-                files = stream.collect(Collectors.toList());
+        try (Stream<Path> stream = Files.list(path)) {
+            List<Path> files = stream.collect(Collectors.toList());
+            for (Path incomingFile : files) {
+                if (!Files.isDirectory(incomingFile)) {
+                    processIncomingSmsFile(incomingFile);
+                }
             }
-            files.stream().filter(p -> !Files.isDirectory(p)).forEach(p -> {
-                String fileName = p.getFileName().toString();
-                Matcher matcher = patternPhone.matcher(fileName);
-                if (matcher.find()) {
-                    String phoneNumber = matcher.group(1);
-                    boolean inList = smsConfig.getPhones().stream()
-                            .anyMatch(phone -> phone.getPhone().equals(phoneNumber));
-
-                    if (inList) {
-                        String commandName = readCommandFromFile(p);
-                        if (commandName != null) {
-                            CommandResult result = commandExecutor.run(commandName);
-                            try {
-                                writeAnswer(fileName, phoneNumber, result, commandName);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }
-                //moving to result folder
-                Path resultPath = Paths.get(smsConfig.getProcessedFolder(), p.getFileName().toString());
-                try {
-                    Files.move(p, resultPath);
-                } catch (IOException e) {
-                    log.info("Error while moving file " + resultPath.toString());
-                }
-            });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void writeAnswer(String fileName, String phoneNumber, CommandResult result, String command) throws IOException {
-        Path path = Paths.get(smsConfig.getOutputFolder(), "OUT+" + phoneNumber + "." + fileName);
-        Files.deleteIfExists(path);
-        Files.createFile(path);
+    private void processIncomingSmsFile(Path inconingSmsFilePath) throws IOException {
+        final String fileName = inconingSmsFilePath.getFileName().toString();
+        final Matcher matcher = patternPhone.matcher(fileName);
+        boolean inList = false;
+        String incomingPhoneNumber = "?";
+
+        //processing command
+        if (matcher.find()) {
+            incomingPhoneNumber = matcher.group(1);
+            final String incomingPhoneNumberMatch = incomingPhoneNumber;
+            inList = smsConfig.getPhones().stream()
+                    .anyMatch(phone -> phone.getPhone().equals(incomingPhoneNumberMatch));
+
+            if (inList) {
+                String commandName = readCommandFromFile(inconingSmsFilePath);
+                if (commandName != null) {
+                    CommandResult result = commandExecutor.run(commandName);
+                    writeCommandAnswer(fileName, incomingPhoneNumber, result, commandName);
+                }
+            }
+
+        }
+
+        //forwarding
+        if (!inList) {
+            String text = "Forwarding from (" + incomingPhoneNumber + "):"
+                    + "\n" + readMessageTextFromFile(inconingSmsFilePath);
+            forward(fileName, incomingPhoneNumber, smsConfig.getForwardingPhone(), text);
+        }
+
+        //moving to result folder
+        Path resultPath = Paths.get(smsConfig.getProcessedFolder(), inconingSmsFilePath.getFileName().toString());
+        Files.move(inconingSmsFilePath, resultPath);
+    }
+
+    private void writeCommandAnswer(String fileName, String phoneNumber, CommandResult result, String command)
+            throws IOException {
+
         String resultText =
                 (result.getStatus() != STATUS.OK ?
                         "Command " + command + " result: " + result.getStatus().name() + "\n"
                         : "")
                         + result.getMessage();
-        Files.write(path, resultText.getBytes());
+
+        writeOutSmsFile(fileName, phoneNumber, resultText);
         log.info("Answer ready (status:{}, phone:+{})", result.getStatus(), phoneNumber);
+    }
+
+    private void forward(String fileName, String incomingNumber, String forwardingPhoneNumber, String resultText)
+            throws IOException {
+        writeOutSmsFile(fileName, forwardingPhoneNumber, resultText);
+        log.info("Message forwarded (from:{}, to:+{})", incomingNumber, forwardingPhoneNumber);
+    }
+
+    private void writeOutSmsFile(String fileName, String phoneNumber, String resultText) throws IOException {
+        Path path = Paths.get(smsConfig.getOutputFolder(), "OUT+" + phoneNumber + "." + fileName);
+        Files.deleteIfExists(path);
+        Files.createFile(path);
+
+        Files.write(path, resultText.getBytes());
     }
 
     private String readCommandFromFile(Path filePath) {
@@ -108,6 +128,17 @@ public class SMSProcessor {
                 log.info("Error while found command: {}", lines);
             }
             return command;
+        } catch (IOException ex) {
+            log.info("Error while reading file " + filePath.toString());
+        }
+        return null;
+    }
+
+    private String readMessageTextFromFile(Path filePath) {
+        try {
+            List<String> lines = Files.readAllLines(filePath, Charset.defaultCharset());
+            String result = lines.stream().reduce((s1, s2) -> s1 + "\n" + s2).orElse("");
+            return result;
         } catch (IOException ex) {
             log.info("Error while reading file " + filePath.toString());
         }
