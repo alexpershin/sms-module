@@ -33,7 +33,7 @@ public class SMSProcessor {
     final private static Pattern patternPhone = Pattern.compile(".*_00_\\+([0-9]*)_00.txt");
 
     @Scheduled(cron = "${sms-config.schedule}")
-    void inputSmsScan() {
+    public void inputSmsScan() {
         log.info("Scanning input SMS to process..");
         processInputFolderSMS();
         log.info("Input SMS processing completed");
