@@ -176,6 +176,12 @@ public class ThermostatTest {
         assertFalse(thermostat.isHeatingOn());
         assertFalse(relayController.getPinState(heatingPin).isHigh());
 
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 01)));
+        v.setValue(12.12);
+        thermostat.checkTemperature();
+        assertTrue(thermostat.isHeatingOn());
+        assertTrue(relayController.getPinState(heatingPin).isHigh());
+
         thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(00, 10)));
         v.setValue(12.1);
         thermostat.checkTemperature();
@@ -189,6 +195,13 @@ public class ThermostatTest {
         assertEquals(16.0, thermostat.getMediumT(), 0.01);
         assertTrue(thermostat.isHeatingOn());
         assertTrue(relayController.getPinState(heatingPin).isHigh());
+
+        thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(07, 00)));
+        v.setValue(15.3);
+        thermostat.checkTemperature();
+        assertEquals(12.0, thermostat.getMediumT(), 0.01);
+        assertFalse(thermostat.isHeatingOn());
+        assertFalse(relayController.getPinState(heatingPin).isHigh());
 
         thermostat.setTimer(() -> LocalDateTime.of(LocalDate.now(), LocalTime.of(07, 10)));
         v.setValue(15.3);

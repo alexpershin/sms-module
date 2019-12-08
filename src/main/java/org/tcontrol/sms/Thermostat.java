@@ -54,7 +54,7 @@ public class Thermostat implements IThermostat {
     @Scheduled(cron = "${thermostat.schedule}")
     public void checkTemperature() {
 
-        if(!on){
+        if (!on) {
             return;
         }
 
@@ -99,28 +99,30 @@ public class Thermostat implements IThermostat {
         } else {
             this.on = v;
         }
-        log.info("Termostat is " + (this.on?"ON":"OFF"));
+        log.info("Termostat is " + (this.on ? "ON" : "OFF"));
     }
 
     private boolean night() {
 
-        LocalDateTime time = timer.getCurrentTime();
-        LocalDate date = time.toLocalDate();
-
-        int dayShift = 0;
-        if (thermostatConfig.getNightBegin() > thermostatConfig.getNightEnd()) {
-            dayShift = 1;
-        }
+        LocalDateTime currentLocalTime = timer.getCurrentTime();
+        LocalDate currentDate = currentLocalTime.toLocalDate();
+        LocalTime currentTme = currentLocalTime.toLocalTime();
 
         LocalTime nightBegin = thermostatConfig.nightBegin();
-        LocalDateTime begin = LocalDateTime.of(date, nightBegin);
-        begin = begin.minusDays(dayShift);
+        LocalDateTime begin = LocalDateTime.of(currentDate, nightBegin);
 
         LocalTime nightEnd = thermostatConfig.nightEnd();
-        LocalDateTime end = LocalDateTime.of(date, nightEnd);
+        LocalDateTime end = LocalDateTime.of(currentDate, nightEnd);
 
+        if (thermostatConfig.getNightBegin() > thermostatConfig.getNightEnd()) {
+            if (currentTme.isAfter(nightBegin)) {
+                end = end.plusDays(1);
+            } else if (currentTme.isBefore(nightBegin)) {
+                begin = begin.minusDays(1);
+            }
+        }
 
-        return time.isAfter(begin) && time.isBefore(end);
+        return currentLocalTime.isAfter(begin) && currentLocalTime.isBefore(end);
     }
 
 }
