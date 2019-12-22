@@ -31,6 +31,7 @@ public class SMSProcessor {
     private CommandExecutor commandExecutor;
 
     final private static Pattern patternPhone = Pattern.compile(".*_00_\\+([0-9]*)_00.txt");
+    final private static Pattern patternTime = Pattern.compile("IN([0-9]*)_([0-9]*)_00_.*_(0[0-9]).txt");
 
     @Scheduled(cron = "${sms-config.schedule}")
     public void inputSmsScan() {
@@ -110,7 +111,21 @@ public class SMSProcessor {
     }
 
     private void writeOutSmsFile(String fileName, String phoneNumber, String resultText) throws IOException {
-        Path path = Paths.get(smsConfig.getOutputFolder(), "OUT+" + phoneNumber + "." + fileName);
+
+        final Matcher matcher = patternTime.matcher(fileName);
+        String date = "";
+        String time = "";
+        String suffix = "";
+
+        //processing command
+        if (matcher.find()) {
+            date = matcher.group(1);
+            time = matcher.group(2);
+            suffix = matcher.group(3);
+        }
+
+        String outFileName = "OUT+" + phoneNumber + "." + date + time + suffix + ".txt";
+        Path path = Paths.get(smsConfig.getOutputFolder(), outFileName);
         Files.deleteIfExists(path);
         Files.createFile(path);
 

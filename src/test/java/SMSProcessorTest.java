@@ -40,7 +40,7 @@ public class SMSProcessorTest {
     }
 
     @Test
-    public void forwardingTest() throws IOException {
+    public void forwardingEmptyFileTest() throws IOException {
         String inputFileName = "abc.txt";
         Path inputFilePath = Paths.get(smsConfig.getInputFolder(), inputFileName);
         Files.write(inputFilePath, "abc".getBytes());
@@ -49,7 +49,48 @@ public class SMSProcessorTest {
             List<Path> files = stream.collect(Collectors.toList());
             assertTrue(files.size() == 0);
         }
-        final String expectedOutfileName = "OUT+" + FORWARDING_PHONE + ".abc.txt";
+        final String expectedOutfileName = "OUT+" + FORWARDING_PHONE + "..txt";
+        try (Stream<Path> stream = Files.list(Paths.get(smsConfig.getOutputFolder()))) {
+            Optional<Path> fileOptional = stream.filter(path -> !Files.isDirectory(path))
+                    .filter(path -> path.endsWith(expectedOutfileName)).findFirst();
+            assertTrue(fileOptional.isPresent());
+        } finally {
+            Files.delete(Paths.get(smsConfig.getOutputFolder(), expectedOutfileName));
+            Files.delete(Paths.get(smsConfig.getProcessedFolder(), inputFileName));
+        }
+    }
+
+    @Test
+    public void forwarding1Test() throws IOException {
+        String inputFileName = "IN20190101_135634_00_Megafon_00.txt";
+        Path inputFilePath = Paths.get(smsConfig.getInputFolder(), inputFileName);
+        Files.write(inputFilePath, "abc".getBytes());
+        smsProcessor.inputSmsScan();
+        try (Stream<Path> stream = Files.list(Paths.get(smsConfig.getInputFolder()))) {
+            List<Path> files = stream.collect(Collectors.toList());
+            assertTrue(files.size() == 0);
+        }
+        final String expectedOutfileName = "OUT+" + FORWARDING_PHONE + ".2019010113563400.txt";
+        try (Stream<Path> stream = Files.list(Paths.get(smsConfig.getOutputFolder()))) {
+            Optional<Path> fileOptional = stream.filter(path -> !Files.isDirectory(path))
+                    .filter(path -> path.endsWith(expectedOutfileName)).findFirst();
+            assertTrue(fileOptional.isPresent());
+        } finally {
+            Files.delete(Paths.get(smsConfig.getOutputFolder(), expectedOutfileName));
+            Files.delete(Paths.get(smsConfig.getProcessedFolder(), inputFileName));
+        }
+    }
+    @Test
+    public void forwarding2Test() throws IOException {
+        String inputFileName = "IN20190101_135634_00_Megafon_01.txt";
+        Path inputFilePath = Paths.get(smsConfig.getInputFolder(), inputFileName);
+        Files.write(inputFilePath, "abc".getBytes());
+        smsProcessor.inputSmsScan();
+        try (Stream<Path> stream = Files.list(Paths.get(smsConfig.getInputFolder()))) {
+            List<Path> files = stream.collect(Collectors.toList());
+            assertTrue(files.size() == 0);
+        }
+        final String expectedOutfileName = "OUT+" + FORWARDING_PHONE + ".2019010113563401.txt";
         try (Stream<Path> stream = Files.list(Paths.get(smsConfig.getOutputFolder()))) {
             Optional<Path> fileOptional = stream.filter(path -> !Files.isDirectory(path))
                     .filter(path -> path.endsWith(expectedOutfileName)).findFirst();
