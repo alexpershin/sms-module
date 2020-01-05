@@ -38,3 +38,6 @@ termostat:
   schedule: '0 0/5 * * * ?'
   sensor: 28-000002c7c3ee
   relayPin: 'GPIO 0'
+
+voltage-monitor:
+  schedule: '0/30 * * * * ?'
