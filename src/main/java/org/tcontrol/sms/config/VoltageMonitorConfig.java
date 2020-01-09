@@ -1,14 +1,23 @@
 package org.tcontrol.sms.config;
 
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.RaspiPin;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.annotation.PostConstruct;
-import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @RequiredArgsConstructor
 public class VoltageMonitorConfig {
+    private List<PinConfiguration> pins = new ArrayList<>();
+
+    @Data
+    @RequiredArgsConstructor
+    public static class PinConfiguration
+    {
+        private int id;
+        private double ratio;
+        private int precision;
+        private String unit;
+    }
 }

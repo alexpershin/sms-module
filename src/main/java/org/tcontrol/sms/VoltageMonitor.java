@@ -39,21 +39,34 @@ import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 import com.pi4j.io.spi.SpiChannel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.tcontrol.sms.config.SensorConfig;
+import org.tcontrol.sms.config.VoltageMonitorConfig;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Optional;
 
 
 @Component
 @Slf4j
 public class VoltageMonitor {
 
+    public static final int DEFAULT_PRECISION = 3;
     private GpioController gpio;
 
     private AdcGpioProvider provider;
 
     GpioPinAnalogInput inputs[];
+
+    public VoltageMonitor(VoltageMonitorConfig voltageMonitorConfig) {
+        this.voltageMonitorConfig = voltageMonitorConfig;
+    }
+
+    private VoltageMonitorConfig voltageMonitorConfig;
 
     @PostConstruct
     void init() {
@@ -63,8 +76,8 @@ public class VoltageMonitor {
             provider = new MCP3008GpioProvider(SpiChannel.CS0);
 
             inputs = new GpioPinAnalogInput[]{
-                    gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH0, "MyAnalogInput-CH0"),
-                    gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH1, "MyAnalogInput-CH1"),
+                    gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH0, "battery-voltage"),
+                    gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH1, "power-voltage"),
                     gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH2, "MyAnalogInput-CH2"),
                     gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH3, "MyAnalogInput-CH3"),
                     gpio.provisionAnalogInputPin(provider, MCP3008Pin.CH4, "MyAnalogInput-CH4"),
@@ -100,7 +113,16 @@ public class VoltageMonitor {
         if (provider != null) {
             // Print current analog input conversion values from each input channel
             for (GpioPinAnalogInput input : inputs) {
-                System.out.println(">" + input.getName() + ": " + input.getValue());
+                Optional<VoltageMonitorConfig.PinConfiguration> pin =
+                        voltageMonitorConfig.getPins().stream()
+                                .filter(p -> p.getId() == input.getPin().getAddress()).findFirst();
+                double ratio = pin.isPresent() ? pin.get().getRatio() : 1.0;
+                String unit = pin.isPresent() ? pin.get().getUnit() : "";
+                double value = input.getValue() * ratio;
+                BigDecimal decimal = new BigDecimal(value);
+                value = decimal.setScale(pin.isPresent() ? pin.get().getPrecision(): DEFAULT_PRECISION,
+                        RoundingMode.HALF_UP).doubleValue();
+                log.info(">" + input.getName() + ": " + value + " " + unit);
             }
         }
     }

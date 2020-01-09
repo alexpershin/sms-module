@@ -41,3 +41,10 @@ termostat:
 
 voltage-monitor:
   schedule: '0/30 * * * * ?'
+  pins:
+  - id: 0
+    ratio: 0.022573
+    unit: V
+  - id: 1
+    ratio: 0.32573
+    unit: V
