@@ -1,0 +1,1 @@
+15 23 * * * root /sbin/shutdown -r now
