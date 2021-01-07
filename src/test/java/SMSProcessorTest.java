@@ -2,7 +2,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.tcontrol.sms.SMSProcessor;
 import org.tcontrol.sms.commands.CommandExecutor;
-import org.tcontrol.sms.config.SMSConfig;
+import org.tcontrol.sms.config.props.SMSConfig;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SMSProcessorTest {
@@ -47,7 +48,7 @@ public class SMSProcessorTest {
         smsProcessor.inputSmsScan();
         try (Stream<Path> stream = Files.list(Paths.get(smsConfig.getInputFolder()))) {
             List<Path> files = stream.collect(Collectors.toList());
-            assertTrue(files.size() == 0);
+            assertEquals(0, files.size());
         }
         final String expectedOutfileName = "OUT+" + FORWARDING_PHONE + "..txt";
         try (Stream<Path> stream = Files.list(Paths.get(smsConfig.getOutputFolder()))) {
@@ -68,7 +69,7 @@ public class SMSProcessorTest {
         smsProcessor.inputSmsScan();
         try (Stream<Path> stream = Files.list(Paths.get(smsConfig.getInputFolder()))) {
             List<Path> files = stream.collect(Collectors.toList());
-            assertTrue(files.size() == 0);
+            assertEquals(0, files.size());
         }
         final String expectedOutfileName = "OUT+" + FORWARDING_PHONE + ".2019010113563400.txt";
         try (Stream<Path> stream = Files.list(Paths.get(smsConfig.getOutputFolder()))) {
@@ -88,7 +89,7 @@ public class SMSProcessorTest {
         smsProcessor.inputSmsScan();
         try (Stream<Path> stream = Files.list(Paths.get(smsConfig.getInputFolder()))) {
             List<Path> files = stream.collect(Collectors.toList());
-            assertTrue(files.size() == 0);
+            assertEquals(0, files.size());
         }
         final String expectedOutfileName = "OUT+" + FORWARDING_PHONE + ".2019010113563401.txt";
         try (Stream<Path> stream = Files.list(Paths.get(smsConfig.getOutputFolder()))) {

@@ -2,10 +2,9 @@ package org.tcontrol.sms;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.tcontrol.sms.config.SensorConfig;
+import org.tcontrol.sms.config.props.SensorConfig;
 import org.tcontrol.sms.dao.SensorValue;
 
 import java.io.IOException;
@@ -31,7 +30,7 @@ public class TemperatureMonitor implements ITemperatureMonitor {
 
         int successCount = 0;
         List<SensorConfig.SensorConfiguration> sensors = config.getSensors();
-        SensorValue values[] = new SensorValue[sensors.size()];
+        SensorValue[] values = new SensorValue[sensors.size()];
         for (SensorConfig.SensorConfiguration sensor : sensors) {
             try {
                 String id = sensor.getId();

@@ -1,4 +1,4 @@
-package org.tcontrol.sms.config;
+package org.tcontrol.sms.config.props;
 
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
@@ -17,13 +17,7 @@ public class SMSConfig {
     private String inputFolder;
     private String outputFolder;
     private String processedFolder;
-    private String heatingPin;
     private String forwardingPhone;
-
-    @PostConstruct
-    public void postConstruct(){
-        heatingPin();
-    }
 
     @Data
     @RequiredArgsConstructor
@@ -31,9 +25,5 @@ public class SMSConfig {
     {
         private String phone;
         private String name;
-    }
-
-    public Pin heatingPin(){
-        return RaspiPin.getPinByName(heatingPin);
     }
 }

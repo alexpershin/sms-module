@@ -19,7 +19,6 @@ sms-config:
   outputFolder: src/test/resources/messages/outbox
   processedFolder: src/test/resources/messages/processed
   schedule: '0/10 * * * * ?'
-  heatingPin: 'GPIO 0'
   phones:
   - phone: 79210972100
     name: megafon
@@ -37,6 +36,16 @@ thermostat:
   schedule: '0/5 * * * * ?'
   sensor: 28-000002c7c3ee
   relayPin: 'GPIO 0'
+
+thermostat-gas:
+  tDay: 20.0
+  tNight: 18.0
+  delta: 0.5
+  nightBegin: 22:00:00
+  nightEnd: 7:00:00
+  schedule: '0/5 * * * * ?'
+  sensor: 28-000002c7c3ee
+  relayPin: 'GPIO 1'
 
 voltage-monitor:
   schedule: '0/30 * * * * ?'

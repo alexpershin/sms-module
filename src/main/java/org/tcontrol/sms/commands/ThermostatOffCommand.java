@@ -1,6 +1,5 @@
 package org.tcontrol.sms.commands;
 
-import com.pi4j.io.gpio.Pin;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -8,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.tcontrol.sms.IRelayController;
 import org.tcontrol.sms.ISMSCommand;
 import org.tcontrol.sms.IThermostat;
-import org.tcontrol.sms.config.ThermostatConfig;
+import org.tcontrol.sms.config.props.ThermostatConfig;
 
 @Component
 @Slf4j

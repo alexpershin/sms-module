@@ -1,37 +1,36 @@
 package org.tcontrol.sms.commands;
 
+import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
-import lombok.AllArgsConstructor;
+import com.pi4j.io.gpio.RaspiPin;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.tcontrol.sms.IRelayController;
 import org.tcontrol.sms.ISMSCommand;
 import org.tcontrol.sms.IThermostat;
-import org.tcontrol.sms.Thermostat;
-import org.tcontrol.sms.config.SMSConfig;
+import org.tcontrol.sms.config.props.SMSConfig;
 
 @Component
 @Slf4j
 @Qualifier("heatingOnCommand")
 public class HeatingOnCommand implements ISMSCommand {
 
-    private IRelayController relayController;
+    private final IRelayController relayController;
 
-    private IThermostat thermostat;
+    private final IThermostat thermostat;
 
-    private SMSConfig smsConfig;
+    private final SMSConfig smsConfig;
 
     @Getter
     private Boolean prevThermostatState;
 
     public HeatingOnCommand(IRelayController relayController,
-                            IThermostat thermostat,
+                            IThermostat thermostatElectro,
                             SMSConfig smsConfig) {
         this.relayController = relayController;
-        this.thermostat = thermostat;
+        this.thermostat = thermostatElectro;
         this.smsConfig = smsConfig;
     }
 
@@ -40,9 +39,9 @@ public class HeatingOnCommand implements ISMSCommand {
         prevThermostatState = thermostat.isOn();
 
         thermostat.changeOn(false);
-
-        PinState result = relayController.turnOnRelay(smsConfig.heatingPin());
-
+        String heatingPin = thermostat.getHeatingPin();
+        Pin pin = RaspiPin.getPinByName(heatingPin);
+        PinState result = relayController.turnOnRelay(pin);
 
         log.info("Executed");
         return new CommandResult(STATUS.OK, "heating is " + (result.isHigh() ? "ON" : "OFF"));

@@ -39,19 +39,18 @@ import com.pi4j.io.gpio.event.GpioPinAnalogValueChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerAnalog;
 import com.pi4j.io.spi.SpiChannel;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.tcontrol.sms.config.SensorConfig;
-import org.tcontrol.sms.config.VoltageMonitorConfig;
+import org.springframework.stereotype.Service;
+import org.tcontrol.sms.config.props.VoltageMonitorConfig;
 
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;
+import org.tcontrol.sms.config.props.VoltageMonitorConfig.PinConfiguration;
 
 
-@Component
+@Service
 @Slf4j
 public class VoltageMonitor {
 
@@ -60,7 +59,7 @@ public class VoltageMonitor {
 
     private AdcGpioProvider provider;
 
-    GpioPinAnalogInput inputs[];
+    GpioPinAnalogInput[] inputs;
 
     public VoltageMonitor(VoltageMonitorConfig voltageMonitorConfig) {
         this.voltageMonitorConfig = voltageMonitorConfig;
@@ -69,7 +68,7 @@ public class VoltageMonitor {
     private VoltageMonitorConfig voltageMonitorConfig;
 
     @PostConstruct
-    void init() {
+    public void init() {
         // create gpio controller
         try {
             gpio = GpioFactory.getInstance();
@@ -88,15 +87,12 @@ public class VoltageMonitor {
             provider.setEventThreshold(100, inputs);
             provider.setMonitorInterval(250);
 
-            GpioPinListenerAnalog listener = new GpioPinListenerAnalog() {
-                @Override
-                public void handleGpioPinAnalogValueChangeEvent(GpioPinAnalogValueChangeEvent event) {
-                    // get RAW value
-                    double value = event.getValue();
+            GpioPinListenerAnalog listener = event -> {
+                // get RAW value
+                double value = event.getValue();
 
-                    // display output
-                    System.out.println("<CHANGED VALUE> [" + event.getPin().getName() + "] : RAW VALUE = " + value);
-                }
+                // display output
+                log.info("<CHANGED VALUE> [" + event.getPin().getName() + "] : RAW VALUE = " + value);
             };
 
             // Register the gpio analog input listener for all input pins
@@ -107,20 +103,21 @@ public class VoltageMonitor {
     }
 
     @Scheduled(cron = "${voltage-monitor.schedule}")
-    public void monitor() throws Exception {
+    public void monitor() {
 
-        System.out.println("MCP3008 ADC:");
+        log.info("MCP3008 ADC:");
         if (provider != null) {
             // Print current analog input conversion values from each input channel
             for (GpioPinAnalogInput input : inputs) {
                 Optional<VoltageMonitorConfig.PinConfiguration> pin =
                         voltageMonitorConfig.getPins().stream()
                                 .filter(p -> p.getId() == input.getPin().getAddress()).findFirst();
-                double ratio = pin.isPresent() ? pin.get().getRatio() : 1.0;
+                double ratio = pin.map(PinConfiguration::getRatio).orElse(1.0);
                 String unit = pin.isPresent() ? pin.get().getUnit() : "";
                 double value = input.getValue() * ratio;
                 BigDecimal decimal = new BigDecimal(value);
-                value = decimal.setScale(pin.isPresent() ? pin.get().getPrecision(): DEFAULT_PRECISION,
+                value = decimal.setScale(
+                    pin.map(PinConfiguration::getPrecision).orElse(DEFAULT_PRECISION),
                         RoundingMode.HALF_UP).doubleValue();
                 log.info(">" + input.getName() + ": " + value + " " + unit);
             }

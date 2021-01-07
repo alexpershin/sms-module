@@ -1,4 +1,4 @@
-package org.tcontrol.sms.config;
+package org.tcontrol.sms.config.props;
 
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;

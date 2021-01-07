@@ -2,33 +2,29 @@ package org.tcontrol.sms;
 
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
-import com.pi4j.io.gpio.RaspiPin;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.tcontrol.sms.config.ThermostatConfig;
+import org.springframework.stereotype.Service;
+import org.tcontrol.sms.config.props.ThermostatConfig;
 import org.tcontrol.sms.dao.SensorValue;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-@Component
 @Slf4j
 public class Thermostat implements IThermostat {
-    @Setter
-    private ThermostatConfig thermostatConfig;
+    private final ThermostatConfig thermostatConfig;
 
-    @Setter
-    private ITemperatureMonitor temperatureMonitor;
+    private final ITemperatureMonitor temperatureMonitor;
 
-    @Setter
-    IRelayController relayController;
+    private final IRelayController relayController;
 
-    @Setter
-    private ITimer timer;
+    private final ITimer timer;
+
+    @Getter
+    private final String name;
 
     @Getter
     boolean heatingOn;
@@ -42,11 +38,14 @@ public class Thermostat implements IThermostat {
     public Thermostat(ThermostatConfig thermostatConfig,
                       ITemperatureMonitor temperatureMonitor,
                       IRelayController relayController,
-                      ITimer timer) {
+                      ITimer timer,
+                      String name
+        ) {
         this.thermostatConfig = thermostatConfig;
         this.temperatureMonitor = temperatureMonitor;
         this.relayController = relayController;
         this.timer = timer;
+        this.name = name;
     }
 
 
@@ -72,7 +71,6 @@ public class Thermostat implements IThermostat {
             } else {
                 heatingOn = currentT <= mediumT - delta;
             }
-
 
             Pin heatingPin = thermostatConfig.relayPin();
 
@@ -100,6 +98,11 @@ public class Thermostat implements IThermostat {
             this.on = v;
         }
         log.info("Termostat is " + (this.on ? "ON" : "OFF"));
+    }
+
+    @Override
+    public String getHeatingPin() {
+        return thermostatConfig.getRelayPin();
     }
 
     private boolean night() {

@@ -1,4 +1,4 @@
-package org.tcontrol.sms.config;
+package org.tcontrol.sms.config.props;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

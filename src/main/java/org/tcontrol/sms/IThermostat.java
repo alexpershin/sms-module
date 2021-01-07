@@ -3,14 +3,19 @@ package org.tcontrol.sms;
 import org.springframework.scheduling.annotation.Scheduled;
 
 public interface IThermostat {
-    @Scheduled(cron = "${thermostat.schedule}")
-    void checkTemperature();
 
-    boolean isHeatingOn();
+  @Scheduled(cron = "${thermostat.schedule}")
+  void checkTemperature();
 
-    boolean isOn();
+  boolean isHeatingOn();
 
-    float getMediumT();
+  boolean isOn();
 
-    void changeOn(boolean v);
+  float getMediumT();
+
+  void changeOn(boolean v);
+
+  String getHeatingPin();
+
+  String getName();
 }

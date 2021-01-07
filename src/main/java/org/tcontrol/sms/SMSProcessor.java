@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.tcontrol.sms.commands.CommandResult;
 import org.tcontrol.sms.commands.CommandExecutor;
 import org.tcontrol.sms.commands.STATUS;
-import org.tcontrol.sms.config.SMSConfig;
+import org.tcontrol.sms.config.props.SMSConfig;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -152,8 +152,7 @@ public class SMSProcessor {
     private String readMessageTextFromFile(Path filePath) {
         try {
             List<String> lines = Files.readAllLines(filePath, Charset.defaultCharset());
-            String result = lines.stream().reduce((s1, s2) -> s1 + "\n" + s2).orElse("");
-            return result;
+            return lines.stream().reduce((s1, s2) -> s1 + "\n" + s2).orElse("");
         } catch (IOException ex) {
             log.info("Error while reading file " + filePath.toString());
         }
