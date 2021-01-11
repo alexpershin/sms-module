@@ -11,7 +11,8 @@ sensor-config:
     name: street
   - id: 28-000002c7eed3
     name: basement
-  - id: 28-0000066c6a65
+#  - id: 28-0000066c6a65
+  - id: 28-0000058ddc1d
     name: case
 
 sms-config:
@@ -27,13 +28,14 @@ sms-config:
   - phone: 79119378212
     name: MTS
 
-thermostat:
+thermostat.schedule: '0/5 * * * * ?'
+
+thermostat-electro:
   tDay: 12.0
   tNight: 16.0
   delta: 0.5
   nightBegin: 23:10:00
   nightEnd: 7:10:00
-  schedule: '0/5 * * * * ?'
   sensor: 28-000002c7c3ee
   relayPin: 'GPIO 0'
 
@@ -44,8 +46,11 @@ thermostat-gas:
   nightBegin: 22:00:00
   nightEnd: 7:00:00
   schedule: '0/5 * * * * ?'
-  sensor: 28-000002c7c3ee
+  sensor: 28-0000058ddc1d
   relayPin: 'GPIO 1'
+
+button-controller:
+  buttonPinName: 'GPIO 5'
 
 voltage-monitor:
   schedule: '0/30 * * * * ?'

@@ -16,7 +16,10 @@ import org.junit.Test;
 import org.tcontrol.sms.IRelayController;
 import org.tcontrol.sms.ITemperatureMonitor;
 import org.tcontrol.sms.ITimer;
+import org.tcontrol.sms.IVoltageMonitor;
+import org.tcontrol.sms.IVoltageMonitor.VoltageResult;
 import org.tcontrol.sms.Thermostat;
+import org.tcontrol.sms.VoltageMonitor;
 import org.tcontrol.sms.commands.CommandResult;
 import org.tcontrol.sms.commands.StatusCommand;
 import org.tcontrol.sms.config.props.SMSConfig;
@@ -130,8 +133,10 @@ public class StatusCommandTest {
 
     sensorConfig.setSensors(Collections.singletonList(sensorConfiguration));
 
+    final IVoltageMonitor voltageMonitor = ()->Arrays.asList(new VoltageResult("socket", 220.1, "V"));
+
     statusCommand = new StatusCommand(temperatureMonitor, sensorConfig,
-        relayController, thermostat1, thermostat2, new SMSConfig());
+        relayController, thermostat1, thermostat2, voltageMonitor);
 
   }
 
@@ -143,8 +148,8 @@ public class StatusCommandTest {
     thermostat2.checkTemperature();
 
     CommandResult result = statusCommand.run();
-    assertTrue(result.getMessage().contains("termo1(12.0): ON"));
-    assertTrue(result.getMessage().contains("termo2(18.0): ON"));
-    //System.out.println(result.getMessage());
+    assertTrue(result.getMessage().contains("termo1(12.0): ON, heating: ON"));
+    assertTrue(result.getMessage().contains("termo2(18.0): ON, heating: ON"));
+    assertTrue(result.getMessage().contains("socket: 220.1V"));
   }
 }

@@ -16,6 +16,8 @@ public class CommandExecutor {
         HEATING_OFF,
         THERM_ON,
         THERM_OFF,
+        GAS_ON,
+        GAS_OFF,
         SET_TEMP
     }
 
@@ -28,6 +30,10 @@ public class CommandExecutor {
     private ISMSCommand thermostatOnCommand;
 
     private ISMSCommand thermostatOffCommand;
+
+    private ISMSCommand gasOnCommand;
+
+    private ISMSCommand gasOffCommand;
 
     public CommandResult run(String name) {
         final CommandName commandName;
@@ -53,7 +59,14 @@ public class CommandExecutor {
             case THERM_OFF:
                 command = thermostatOffCommand;
                 break;
+            case GAS_ON:
+                command = gasOnCommand;
+                break;
+            case GAS_OFF:
+                command = gasOffCommand;
+                break;
         }
+
         CommandResult result = command != null ? command.run() : null;
 
         return result;

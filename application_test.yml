@@ -29,13 +29,14 @@ sms-config:
   - phone: 79119378212
     name: mama
 
-thermostat:
+thermostat.schedule: '0 0/1 * * * ?'
+
+thermostat-electro:
   tDay: 12.0
   tNight: 16.0
   delta: 0.5
   nightBegin: 23:10:00
   nightEnd: 7:10:00
-  schedule: '0 0/5 * * * ?'
   sensor: 28-000002c7c3ee
   relayPin: 'GPIO 0'
 
@@ -50,3 +51,16 @@ voltage-monitor:
     ratio: 0.32573
     precision: 1
     unit: V
+
+
+thermostat-gas:
+  tDay: 20.0
+  tNight: 18.0
+  delta: 0.5
+  nightBegin: 22:00:00
+  nightEnd: 7:00:00
+  sensor: 28-000002c7c3ee
+  relayPin: 'GPIO 1'
+
+button-controller:
+  buttonPinName: 'GPIO 5'

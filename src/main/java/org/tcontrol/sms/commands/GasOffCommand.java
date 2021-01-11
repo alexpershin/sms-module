@@ -1,7 +1,6 @@
 package org.tcontrol.sms.commands;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -14,21 +13,21 @@ import org.tcontrol.sms.config.props.ThermostatConfig;
 @Slf4j
 @Qualifier("thermostatOffCommand")
 @AllArgsConstructor
-public class ThermostatOffCommand implements ISMSCommand {
+public class GasOffCommand implements ISMSCommand {
 
     private final IRelayController relayController;
 
-    private final IThermostat thermostatElectro;
+    private final IThermostat thermostatGas;
 
-    private final ThermostatConfig thermostatElectroConfig;
+    private final ThermostatConfig thermostatGasConfig;
 
     @Override
     public CommandResult run() {
 
-        thermostatElectro.changeOn(false);
-        relayController.turnOffRelay(thermostatElectroConfig.relayPin());
+        thermostatGas.changeOn(false);
+        relayController.turnOffRelay(thermostatGasConfig.relayPin());
 
         log.info("Executed");
-        return new CommandResult(STATUS.OK, "Termostat is off");
+        return new CommandResult(STATUS.OK, "Gas thermostat is off");
     }
 }

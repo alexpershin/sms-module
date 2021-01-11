@@ -14,9 +14,9 @@ import org.tcontrol.sms.IRelayController;
 import org.tcontrol.sms.ISMSCommand;
 import org.tcontrol.sms.ITemperatureMonitor;
 import org.tcontrol.sms.IThermostat;
-import org.tcontrol.sms.config.props.SMSConfig;
+import org.tcontrol.sms.IVoltageMonitor;
+import org.tcontrol.sms.IVoltageMonitor.VoltageResult;
 import org.tcontrol.sms.config.props.SensorConfig;
-import org.tcontrol.sms.dao.SensorValue;
 
 
 @Component
@@ -38,7 +38,7 @@ public class StatusCommand implements ISMSCommand {
 
   private final IThermostat thermostatGas;
 
-  private final SMSConfig smsConfig;
+  private final IVoltageMonitor voltageMonitor;
 
   @Override
   public CommandResult run() {
@@ -52,10 +52,22 @@ public class StatusCommand implements ISMSCommand {
 
     res = thermostatStatus(res, thermostatElectro, relayController);
     res = thermostatStatus(res, thermostatGas, relayController);
+    res = voltageStatus(res, voltageMonitor);
+
+    res = Optional.of(res.orElse("") + "\n" + simpleDateFormat.format(new Date()));
 
     String text = res.orElse("status not ready");
     log.info("Executed");
     return new CommandResult(res.isPresent() ? STATUS.OK : STATUS.FAILURE, text);
+  }
+
+  private Optional<String> voltageStatus(Optional<String> res, IVoltageMonitor voltageMonitor) {
+    for (VoltageResult vr : voltageMonitor.getVoltageResults()) {
+      res = Optional.of(
+          res.orElse("")
+              + "\n" + vr.getName() + ": " + vr.getValue() + vr.getUnit());
+    }
+    return res;
   }
 
   private static Optional<String> thermostatStatus(Optional<String> res,
@@ -64,14 +76,10 @@ public class StatusCommand implements ISMSCommand {
     Pin pin = RaspiPin.getPinByName(heatingPin);
 
     PinState heatingState = relayController.getPinState(pin);
-    if (heatingState != null) {
-      res = Optional.of(res.orElse("") + "\nHeating: " + (heatingState.isHigh() ? "ON" : "OFF"));
-    }
     res = Optional.of(
         res.orElse("")
-            + "\n"+ thermostat.getName() + "(" + thermostat.getMediumT() + "): "
-            + (thermostat.isOn() ? "ON" : "OFF")
-            + "\n" + simpleDateFormat.format(new Date()));
+            + "\n" + thermostat.getName() + "(" + thermostat.getMediumT() + "): "
+            + (thermostat.isOn() ? "ON" : "OFF") + ", heating: " + (heatingState.isHigh() ? "ON" : "OFF"));
     return res;
   }
 }

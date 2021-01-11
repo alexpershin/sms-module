@@ -20,7 +20,6 @@ public class HeatingOffCommand implements ISMSCommand {
     private final IRelayController relayController;
     private final IThermostat thermostatElectro;
     private final HeatingOnCommand heatingOnCommand;
-    private final SMSConfig smsConfig;
 
     @Override
     public CommandResult run() {

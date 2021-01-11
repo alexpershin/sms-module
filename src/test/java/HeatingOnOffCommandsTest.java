@@ -40,7 +40,7 @@ public class HeatingOnOffCommandsTest {
         HeatingOnCommand heatingOnCommand =
                 new HeatingOnCommand(relayController, thermostat, smsConfig);
         ISMSCommand heatingOffCommand =
-                new HeatingOffCommand(relayController, thermostat, heatingOnCommand, smsConfig);
+                new HeatingOffCommand(relayController, thermostat, heatingOnCommand);
 
         thermostat.changeOn(true);
         assertTrue(thermostat.isOn());
@@ -61,10 +61,12 @@ public class HeatingOnOffCommandsTest {
     @Test
     public void thermostatWasOffTest(){
         SMSConfig smsConfig = new SMSConfig();
+
         HeatingOnCommand heatingOnCommand =
                 new HeatingOnCommand(relayController, thermostat, smsConfig);
+
         ISMSCommand heatingOffCommand =
-                new HeatingOffCommand(relayController, thermostat, heatingOnCommand, smsConfig);
+                new HeatingOffCommand(relayController, thermostat, heatingOnCommand);
 
         thermostat.changeOn(false);
         assertFalse(thermostat.isOn());

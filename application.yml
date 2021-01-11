@@ -11,7 +11,8 @@ sensor-config:
     name: street
   - id: 28-000002c7eed3
     name: basement
-  - id: 28-0000066c6a65
+#  - id: 28-0000066c6a65
+  - id: 28-0000058ddc1d
     name: case
 
 sms-config:
@@ -30,13 +31,13 @@ sms-config:
     name: mama
 
 termostat:
-  tDay: 12.0
-  tNight: 16.0
+  tDay: 30.0
+  tNight: 30.0
   delta: 0.5
   nightBegin: 23:10:00
   nightEnd: 7:10:00
   schedule: '0 0/5 * * * ?'
-  sensor: 28-000002c7c3ee
+  sensor: 28-0000058ddc1d
   relayPin: 'GPIO 0'
 
 voltage-monitor:
@@ -48,3 +49,17 @@ voltage-monitor:
   - id: 1
     ratio: 0.32573
     unit: V
+
+
+thermostat-gas:
+  tDay: 20.0
+  tNight: 18.0
+  delta: 0.5
+  nightBegin: 22:00:00
+  nightEnd: 7:00:00
+  schedule: '0/5 * * * * ?'
+  sensor: 28-0000058ddc1d
+  relayPin: 'GPIO 1'
+
+button-controller:
+  buttonPinName: 'GPIO 5'

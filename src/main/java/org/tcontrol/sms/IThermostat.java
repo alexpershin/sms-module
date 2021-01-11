@@ -4,7 +4,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 public interface IThermostat {
 
-  @Scheduled(cron = "${thermostat.schedule}")
   void checkTemperature();
 
   boolean isHeatingOn();
