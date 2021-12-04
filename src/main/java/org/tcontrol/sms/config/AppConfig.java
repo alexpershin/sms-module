@@ -44,6 +44,12 @@ public class AppConfig {
   }
 
   @Bean
+  @ConfigurationProperties(prefix = "thermostat-veranda")
+  public ThermostatConfig thermostatVarandaConfig() {
+    return new ThermostatConfig();
+  }
+
+  @Bean
   @ConfigurationProperties(prefix = "voltage-monitor")
   public VoltageMonitorConfig voltageMonitorConfig() {
     return new VoltageMonitorConfig();
@@ -73,5 +79,15 @@ public class AppConfig {
       final ITimer timer) {
     return new Thermostat(thermostatGasConfig, temperatureMonitor, relayController,
         timer, "termo2(gas)");
+  }
+
+  @Bean
+  public IThermostat thermostatVeranda(
+      final ThermostatConfig thermostatVerandaConfig,
+      final ITemperatureMonitor temperatureMonitor,
+      final IRelayController relayController,
+      final ITimer timer) {
+    return new Thermostat(thermostatVerandaConfig, temperatureMonitor, relayController,
+        timer, "termo3(veranda)");
   }
 }

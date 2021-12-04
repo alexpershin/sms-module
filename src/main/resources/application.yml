@@ -14,6 +14,8 @@ sensor-config:
 #  - id: 28-0000066c6a65
   - id: 28-0000058ddc1d
     name: case
+  - id: 28-000002c7c3ee-1
+    name: veranda
 
 sms-config:
   inputFolder: src/test/resources/messages/inbox
@@ -48,6 +50,16 @@ thermostat-gas:
   schedule: '0/5 * * * * ?'
   sensor: 28-0000058ddc1d
   relayPin: 'GPIO 1'
+
+thermostat-veranda:
+  tDay: 7
+  tNight: 8.0
+  delta: 0.5
+  nightBegin: 22:00:00
+  nightEnd: 7:00:00
+  schedule: '0/5 * * * * ?'
+  sensor: 28-000002c7c3ee-1
+  relayPin: 'GPIO 2'
 
 button-controller:
   buttonPinName: 'GPIO 5'
