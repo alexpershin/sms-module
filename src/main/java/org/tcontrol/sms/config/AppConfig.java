@@ -45,7 +45,7 @@ public class AppConfig {
 
   @Bean
   @ConfigurationProperties(prefix = "thermostat-veranda")
-  public ThermostatConfig thermostatVarandaConfig() {
+  public ThermostatConfig thermostatVerandaConfig() {
     return new ThermostatConfig();
   }
 
