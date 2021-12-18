@@ -56,7 +56,7 @@ import org.tcontrol.sms.config.props.VoltageMonitorConfig.PinConfiguration;
 @Slf4j
 public class VoltageMonitor implements IVoltageMonitor {
 
-  public static final int DEFAULT_PRECISION = 3;
+  public static final int DEFAULT_PRECISION = 4;
   private GpioController gpio;
 
   private AdcGpioProvider provider;

@@ -50,7 +50,6 @@ voltage-monitor:
     ratio: 0.32573
     unit: V
 
-
 thermostat-gas:
   tDay: 20.0
   tNight: 18.0

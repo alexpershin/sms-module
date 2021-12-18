@@ -38,6 +38,8 @@ public class StatusCommand implements ISMSCommand {
 
   private final IThermostat thermostatGas;
 
+  private final IThermostat thermostatVeranda;
+
   private final IVoltageMonitor voltageMonitor;
 
   @Override
@@ -52,6 +54,7 @@ public class StatusCommand implements ISMSCommand {
 
     res = thermostatStatus(res, thermostatElectro, relayController);
     res = thermostatStatus(res, thermostatGas, relayController);
+    res = thermostatStatus(res, thermostatVeranda, relayController);
     res = voltageStatus(res, voltageMonitor);
 
     res = Optional.of(res.orElse("") + "\n" + simpleDateFormat.format(new Date()));
