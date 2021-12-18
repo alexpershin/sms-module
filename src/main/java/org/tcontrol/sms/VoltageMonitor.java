@@ -121,11 +121,11 @@ public class VoltageMonitor implements IVoltageMonitor {
                 .filter(p -> p.getId() == input.getPin().getAddress()).findFirst();
         double ratio = pin.map(PinConfiguration::getRatio).orElse(1.0);
         String unit = pin.isPresent() ? pin.get().getUnit() : "";
-        double value = input.getValue() * ratio;
+        double value = input.getValue() * ratio * 10;
         BigDecimal decimal = new BigDecimal(value);
         value = decimal.setScale(
             pin.map(PinConfiguration::getPrecision).orElse(DEFAULT_PRECISION),
-            RoundingMode.HALF_UP).doubleValue();
+            RoundingMode.HALF_UP).doubleValue() / 10;
         voltageResults.add(new VoltageResult(input.getName(), value, unit));
         log.info(">" + input.getName() + ": " + value + " " + unit);
       }
