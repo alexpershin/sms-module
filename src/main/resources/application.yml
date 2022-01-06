@@ -11,11 +11,12 @@ sensor-config:
     name: street
   - id: 28-000002c7eed3
     name: basement
-#  - id: 28-0000066c6a65
   - id: 28-0000058ddc1d
     name: case
   - id: 28-000002c7c3ee-1
     name: veranda
+  - id: 28-000002c7c3ee-2
+    name: my-room
 
 sms-config:
   inputFolder: src/test/resources/messages/inbox
@@ -61,6 +62,16 @@ thermostat-veranda:
   sensor: 28-000002c7c3ee-1
   relayPin: 'GPIO 2'
 
+thermostat-my-room:
+  tDay: 7
+  tNight: 8.0
+  delta: 0.5
+  nightBegin: 22:00:00
+  nightEnd: 7:00:00
+  schedule: '0/5 * * * * ?'
+  sensor: 28-000002c7c3ee-1
+  relayPin: 'GPIO 3'
+
 button-controller:
   buttonPinName: 'GPIO 5'
 
@@ -73,3 +84,6 @@ voltage-monitor:
   - id: 1
     ratio: 0.32573
     unit: V
+
+relay-aggregates:
+  'GPIO 1': 3

@@ -30,13 +30,16 @@ public class StatusCommandTest {
   private static final String GPIO_00 = "GPIO_00";
   private static final String GPIO_01 = "GPIO_01";
   private static final String GPIO_02 = "GPIO_02";
+  private static final String GPIO_03 = "GPIO_03";
   private static final String SENSOR = "abc";
   private Thermostat thermostat1;
   private Thermostat thermostat2;
   private Thermostat thermostat3;
+  private Thermostat thermostat4;
   private ThermostatConfig thermostatConfig;
   private ThermostatConfig thermostatConfig2;
   private ThermostatConfig thermostatConfig3;
+  private ThermostatConfig thermostatConfig4;
   private ITemperatureMonitor temperatureMonitor;
   private IRelayController relayController;
   private ITimer timer;
@@ -72,6 +75,15 @@ public class StatusCommandTest {
     thermostatConfig3.setTNight(18.0f);
     thermostatConfig3.setRelayPin(GPIO_02);
 
+    thermostatConfig4 = new ThermostatConfig();
+    thermostatConfig4.setDelta(0.5f);
+    thermostatConfig4.setNightBegin(60 * 60 * 23);
+    thermostatConfig4.setNightEnd(60 * 60 * 7);
+    thermostatConfig4.setSensor(SENSOR);
+    thermostatConfig4.setTDay(17.0f);
+    thermostatConfig4.setTNight(18.0f);
+    thermostatConfig4.setRelayPin(GPIO_03);
+
     temperatureMonitor = new ITemperatureMonitor() {
 
       Map<String, SensorValue> map = new HashMap<>();
@@ -101,6 +113,7 @@ public class StatusCommandTest {
         currentPinStates.put(thermostatConfig.relayPin(),PinState.LOW);
         currentPinStates.put(thermostatConfig2.relayPin(),PinState.LOW);
         currentPinStates.put(thermostatConfig3.relayPin(),PinState.LOW);
+        currentPinStates.put(thermostatConfig4.relayPin(),PinState.LOW);
       }
       @Override
       public PinState turnOnRelay(Pin controlPin) {
@@ -151,6 +164,14 @@ public class StatusCommandTest {
         "termo3"
     );
 
+    thermostat4 = new Thermostat(
+        thermostatConfig4,
+        temperatureMonitor,
+        relayController,
+        timer,
+        "termo4"
+    );
+
     sensorConfig = new SensorConfig();
 
     SensorConfig.SensorConfiguration sensorConfiguration = new SensorConfig.SensorConfiguration();
@@ -162,7 +183,7 @@ public class StatusCommandTest {
     final IVoltageMonitor voltageMonitor = ()->Arrays.asList(new VoltageResult("socket", 220.1, "V"));
 
     statusCommand = new StatusCommand(temperatureMonitor, sensorConfig,
-        relayController, thermostat1, thermostat2, thermostat3, voltageMonitor);
+        relayController, thermostat1, thermostat2, thermostat3, thermostat4, voltageMonitor);
 
   }
 

@@ -10,6 +10,7 @@ import org.tcontrol.sms.IThermostat;
 import org.tcontrol.sms.ITimer;
 import org.tcontrol.sms.Thermostat;
 import org.tcontrol.sms.config.props.ButtonConfig;
+import org.tcontrol.sms.config.props.RelayAggregatorConfig;
 import org.tcontrol.sms.config.props.SMSConfig;
 import org.tcontrol.sms.config.props.SensorConfig;
 import org.tcontrol.sms.config.props.ThermostatConfig;
@@ -50,6 +51,12 @@ public class AppConfig {
   }
 
   @Bean
+  @ConfigurationProperties(prefix = "thermostat-my-room")
+  public ThermostatConfig thermostatMyRoomConfig() {
+    return new ThermostatConfig();
+  }
+
+  @Bean
   @ConfigurationProperties(prefix = "voltage-monitor")
   public VoltageMonitorConfig voltageMonitorConfig() {
     return new VoltageMonitorConfig();
@@ -60,6 +67,10 @@ public class AppConfig {
   public ButtonConfig buttonConfig() {
     return new ButtonConfig();
   }
+
+  @Bean
+  @ConfigurationProperties(prefix = "relay-aggregates")
+  public RelayAggregatorConfig relayAggregatorConfig(){return new RelayAggregatorConfig();}
 
   @Bean
   public IThermostat thermostatElectro(
@@ -89,5 +100,15 @@ public class AppConfig {
       final ITimer timer) {
     return new Thermostat(thermostatVerandaConfig, temperatureMonitor, relayController,
         timer, "termo3(veranda)");
+  }
+
+  @Bean
+  public IThermostat thermostatMyRoom(
+      final ThermostatConfig thermostatMyRoomConfig,
+      final ITemperatureMonitor temperatureMonitor,
+      final IRelayController relayController,
+      final ITimer timer) {
+    return new Thermostat(thermostatMyRoomConfig, temperatureMonitor, relayController,
+        timer, "termo4(my room)");
   }
 }
