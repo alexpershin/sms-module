@@ -40,7 +40,7 @@ public class ThermostatTest {
         thermostatConfig.setSensor(SENSOR);
         thermostatConfig.setTDay(12.0f);
         thermostatConfig.setTNight(16.0f);
-        thermostatConfig.setRelayPin(GPIO_00);
+        thermostatConfig.getRelayPins().add(GPIO_00);
 
         temperatureMonitor = new ITemperatureMonitor() {
 
@@ -121,7 +121,7 @@ public class ThermostatTest {
     public void testSwitch() {
         when(timer.getCurrentTime()).thenReturn(LocalDateTime.of(LocalDate.now(), LocalTime.of(3, 0)));
 
-        Pin heatingPin = RaspiPin.getPinByName(thermostatConfig.getRelayPin());
+        Pin heatingPin = RaspiPin.getPinByName(thermostatConfig.getRelayPins().get(0));
 
         thermostat.checkTemperature();
         assertTrue(thermostat.isHeatingOn());
@@ -221,7 +221,7 @@ public class ThermostatTest {
     public void testOnOff() {
         when(timer.getCurrentTime()).thenReturn(LocalDateTime.of(LocalDate.now(), LocalTime.of(3, 0)));
 
-        Pin heatingPin = RaspiPin.getPinByName(thermostatConfig.getRelayPin());
+        Pin heatingPin = RaspiPin.getPinByName(thermostatConfig.getRelayPins().get(0));
 
         thermostat.checkTemperature();
         assertTrue(thermostat.isHeatingOn());

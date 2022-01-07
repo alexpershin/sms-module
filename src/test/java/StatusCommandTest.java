@@ -55,7 +55,7 @@ public class StatusCommandTest {
     thermostatConfig.setSensor(SENSOR);
     thermostatConfig.setTDay(12.0f);
     thermostatConfig.setTNight(16.0f);
-    thermostatConfig.setRelayPin(GPIO_00);
+    thermostatConfig.getRelayPins().add(GPIO_00);
 
     thermostatConfig2 = new ThermostatConfig();
     thermostatConfig2.setDelta(0.5f);
@@ -64,7 +64,7 @@ public class StatusCommandTest {
     thermostatConfig2.setSensor(SENSOR);
     thermostatConfig2.setTDay(18.0f);
     thermostatConfig2.setTNight(20.0f);
-    thermostatConfig2.setRelayPin(GPIO_01);
+    thermostatConfig2.getRelayPins().add(GPIO_01);
 
     thermostatConfig3 = new ThermostatConfig();
     thermostatConfig3.setDelta(0.5f);
@@ -73,7 +73,7 @@ public class StatusCommandTest {
     thermostatConfig3.setSensor(SENSOR);
     thermostatConfig3.setTDay(17.0f);
     thermostatConfig3.setTNight(18.0f);
-    thermostatConfig3.setRelayPin(GPIO_02);
+    thermostatConfig3.getRelayPins().add(GPIO_02);
 
     thermostatConfig4 = new ThermostatConfig();
     thermostatConfig4.setDelta(0.5f);
@@ -82,7 +82,7 @@ public class StatusCommandTest {
     thermostatConfig4.setSensor(SENSOR);
     thermostatConfig4.setTDay(17.0f);
     thermostatConfig4.setTNight(18.0f);
-    thermostatConfig4.setRelayPin(GPIO_03);
+    thermostatConfig4.getRelayPins().add(GPIO_03);
 
     temperatureMonitor = new ITemperatureMonitor() {
 
@@ -110,15 +110,15 @@ public class StatusCommandTest {
     relayController = new IRelayController() {
       Map<Pin,PinState> currentPinStates = new HashMap<>();
       {
-        currentPinStates.put(thermostatConfig.relayPin(),PinState.LOW);
-        currentPinStates.put(thermostatConfig2.relayPin(),PinState.LOW);
-        currentPinStates.put(thermostatConfig3.relayPin(),PinState.LOW);
-        currentPinStates.put(thermostatConfig4.relayPin(),PinState.LOW);
+        currentPinStates.put(thermostatConfig.relayPins().get(0),PinState.LOW);
+        currentPinStates.put(thermostatConfig2.relayPins().get(0),PinState.LOW);
+        currentPinStates.put(thermostatConfig3.relayPins().get(0),PinState.LOW);
+        currentPinStates.put(thermostatConfig4.relayPins().get(0),PinState.LOW);
       }
       @Override
       public PinState turnOnRelay(Pin controlPin) {
         PinState currentPinState = PinState.HIGH;
-        currentPinStates.put(thermostatConfig.relayPin(),PinState.HIGH);
+        currentPinStates.put(thermostatConfig.relayPins().get(0),PinState.HIGH);
         return currentPinState;
       }
 

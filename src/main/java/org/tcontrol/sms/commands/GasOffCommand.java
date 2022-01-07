@@ -15,19 +15,21 @@ import org.tcontrol.sms.config.props.ThermostatConfig;
 @AllArgsConstructor
 public class GasOffCommand implements ISMSCommand {
 
-    private final IRelayController relayController;
+  private final IRelayController relayController;
 
-    private final IThermostat thermostatGas;
+  private final IThermostat thermostatGas;
 
-    private final ThermostatConfig thermostatGasConfig;
+  private final ThermostatConfig thermostatGasConfig;
 
-    @Override
-    public CommandResult run() {
+  @Override
+  public CommandResult run() {
 
-        thermostatGas.changeOn(false);
-        relayController.turnOffRelay(thermostatGasConfig.relayPin());
+    thermostatGas.changeOn(false);
+    thermostatGasConfig.relayPins().forEach(pin -> {
+      relayController.turnOffRelay(pin);
+    });
 
-        log.info("Executed");
-        return new CommandResult(STATUS.OK, "Gas thermostat is off");
-    }
+    log.info("Executed");
+    return new CommandResult(STATUS.OK, "Gas thermostat is off");
+  }
 }

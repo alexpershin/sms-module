@@ -39,11 +39,15 @@ public class HeatingOnCommand implements ISMSCommand {
         prevThermostatState = thermostat.isOn();
 
         thermostat.changeOn(false);
-        String heatingPin = thermostat.getHeatingPin();
-        Pin pin = RaspiPin.getPinByName(heatingPin);
-        PinState result = relayController.turnOnRelay(pin);
+
+        String resultString = " ";
+        for(String heatingPin: thermostat.getHeatingPins()){
+            Pin pin = RaspiPin.getPinByName(heatingPin);
+            PinState result = relayController.turnOnRelay(pin);
+            resultString+=(result.isHigh()?"ON":"OFF");
+        }
 
         log.info("Executed");
-        return new CommandResult(STATUS.OK, "heating is " + (result.isHigh() ? "ON" : "OFF"));
+        return new CommandResult(STATUS.OK, "heating is" + resultString);
     }
 }

@@ -3,6 +3,7 @@ package org.tcontrol.sms.commands;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,15 +24,19 @@ public class HeatingOffCommand implements ISMSCommand {
 
     @Override
     public CommandResult run() {
-        String heatingPin = thermostatElectro.getHeatingPin();
-        Pin pin = RaspiPin.getPinByName(heatingPin);
+        String resultString = " ";
+        for(String heatingPin: thermostatElectro.getHeatingPins()){
+            Pin pin = RaspiPin.getPinByName(heatingPin);
+            PinState result = relayController.turnOffRelay(pin);
+            resultString+=(result.isHigh()?"ON":"OFF");
+        }
 
-        PinState result = relayController.turnOffRelay(pin);
         Boolean prevThermostatState = heatingOnCommand.getPrevThermostatState();
         if(prevThermostatState !=null){
             thermostatElectro.changeOn(prevThermostatState);
         }
+
         log.info("Executed");
-        return new CommandResult(STATUS.OK,"heating is " + (result.isHigh()?"ON":"OFF"));
+        return new CommandResult(STATUS.OK,"heating is" + resultString);
     }
 }

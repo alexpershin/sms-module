@@ -34,7 +34,7 @@ public class CommandConfiguration {
     thermostatConfig.setSensor(SENSOR);
     thermostatConfig.setTDay(12.0f);
     thermostatConfig.setTNight(16.0f);
-    thermostatConfig.setRelayPin(GPIO_00);
+    thermostatConfig.getRelayPins().add(GPIO_00);
     return thermostatConfig;
   }
 
@@ -47,7 +47,7 @@ public class CommandConfiguration {
     thermostatConfig.setSensor(SENSOR);
     thermostatConfig.setTDay(18.0f);
     thermostatConfig.setTNight(20.0f);
-    thermostatConfig.setRelayPin(GPIO_00);
+    thermostatConfig.getRelayPins().add(GPIO_00);
     return thermostatConfig;
   }
 

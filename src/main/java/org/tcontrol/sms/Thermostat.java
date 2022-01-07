@@ -5,6 +5,7 @@ import com.pi4j.io.gpio.PinState;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -72,16 +73,16 @@ public class Thermostat implements IThermostat {
         heatingOn = currentT <= mediumT - delta;
       }
 
-      Pin heatingPin = thermostatConfig.relayPin();
-
-      PinState oldState = relayController.getPinState(heatingPin);
-      if (oldState == null || oldState.isHigh() != heatingOn) {
-        if (heatingOn) {
-          relayController.turnOnRelay(heatingPin);
-        } else {
-          relayController.turnOffRelay(heatingPin);
-        }
-      }
+      thermostatConfig.relayPins().forEach(heatingPin -> {
+            PinState oldState = relayController.getPinState(heatingPin);
+            if (oldState == null || oldState.isHigh() != heatingOn) {
+              if (heatingOn) {
+                relayController.turnOnRelay(heatingPin);
+              } else {
+                relayController.turnOffRelay(heatingPin);
+              }
+            }
+          });
 
       log.info(name + "> Check temperature between({},{}), current:{}, state:{}", mediumT - delta,
           mediumT + delta,
@@ -95,7 +96,9 @@ public class Thermostat implements IThermostat {
   public void changeOn(boolean v) {
     if (!v && on) {
       this.on = false;
-      relayController.turnOffRelay(thermostatConfig.relayPin());
+      thermostatConfig.relayPins().forEach(pin->{
+        relayController.turnOffRelay(pin);
+      });
       log.info(name + "> termostat's relay switched off");
     } else {
       this.on = v;
@@ -104,8 +107,8 @@ public class Thermostat implements IThermostat {
   }
 
   @Override
-  public String getHeatingPin() {
-    return thermostatConfig.getRelayPin();
+  public List<String> getHeatingPins() {
+    return thermostatConfig.getRelayPins();
   }
 
   private boolean night() {

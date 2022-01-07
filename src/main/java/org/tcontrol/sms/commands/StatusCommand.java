@@ -78,14 +78,18 @@ public class StatusCommand implements ISMSCommand {
 
   private static Optional<String> thermostatStatus(Optional<String> res,
       IThermostat thermostat, IRelayController relayController) {
-    String heatingPin = thermostat.getHeatingPin();
-    Pin pin = RaspiPin.getPinByName(heatingPin);
 
-    PinState heatingState = relayController.getPinState(pin);
+    String resultString = " ";
+    for (String heatingPin : thermostat.getHeatingPins()) {
+      Pin pin = RaspiPin.getPinByName(heatingPin);
+      PinState heatingState = relayController.getPinState(pin);
+      resultString += heatingState == null ? "UNDEFINED" : (heatingState.isHigh() ? "ON" : "OFF");
+    }
+
     res = Optional.of(
         res.orElse("")
             + "\n" + thermostat.getName() + "(" + thermostat.getMediumT() + "): "
-            + (thermostat.isOn() ? "ON" : "OFF") + ", heating: " + (heatingState.isHigh() ? "ON" : "OFF"));
+            + (thermostat.isOn() ? "ON" : "OFF") + ", heating:" + resultString);
     return res;
   }
 }

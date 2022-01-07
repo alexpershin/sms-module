@@ -1,5 +1,6 @@
 package org.tcontrol.sms;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.tcontrol.sms.dao.SensorValue;
@@ -15,9 +16,8 @@ import java.util.logging.Logger;
 import static java.util.logging.Level.SEVERE;
 
 @Component
+@Slf4j
 public class TemperatureReader implements ITemperatureReader {
-
-    private static final Logger LOGGER = Logger.getLogger(TemperatureReader.class.getName());
 
     private static final String TEMPERATURE_PREFIX = "t=";
 
@@ -55,7 +55,7 @@ public class TemperatureReader implements ITemperatureReader {
                 }
             }
         } catch (IOException ex) {
-            LOGGER.log(SEVERE, "Error while reading file " + pathDeviceFile);
+            log.error("Error while reading file " + pathDeviceFile);
             throw ex;
         }
         return tValue;

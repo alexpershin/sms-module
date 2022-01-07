@@ -1,5 +1,6 @@
 package org.tcontrol.sms;
 
+import java.util.List;
 import org.springframework.scheduling.annotation.Scheduled;
 
 public interface IThermostat {
@@ -14,7 +15,7 @@ public interface IThermostat {
 
   void changeOn(boolean v);
 
-  String getHeatingPin();
+  List<String> getHeatingPins();
 
   String getName();
 }

@@ -26,7 +26,10 @@ public class ThermostatOffCommand implements ISMSCommand {
     public CommandResult run() {
 
         thermostatElectro.changeOn(false);
-        relayController.turnOffRelay(thermostatElectroConfig.relayPin());
+
+        thermostatElectroConfig.relayPins().forEach(pin -> {
+            relayController.turnOffRelay(pin);
+        });
 
         log.info("Executed");
         return new CommandResult(STATUS.OK, "Termostat is off");
