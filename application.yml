@@ -17,6 +17,8 @@ sensor-config:
     name: veranda
   - id: 28-0317017a6aff
     name: my-room
+  - id: 28-0517019b22ff
+    name: hot-watter
 
 sms-config:
   inputFolder: /var/spool/gammu/inbox
@@ -96,6 +98,16 @@ thermostat-my-room:
   relayPins: 
   - 'GPIO 3'
   - 'GPIO 1'
+
+thermostat-hot-watter:
+  tDay: 39.0
+  tNight: 39.0
+  delta: 4.0
+  nightBegin: 23:10:00
+  nightEnd: 7:10:00
+  sensor: 28-0517019b22ff
+  relayPins:
+    - 'GPIO 6'
 
 button-controller:
   buttonPinName: 'GPIO 5'

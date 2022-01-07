@@ -65,6 +65,12 @@ public class AppConfig {
   }
 
   @Bean
+  @ConfigurationProperties(prefix = "thermostat-hot-watter")
+  public ThermostatConfig thermostatHotWatterConfig() {
+    return new ThermostatConfig();
+  }
+
+  @Bean
   @ConfigurationProperties(prefix = "voltage-monitor")
   public VoltageMonitorConfig voltageMonitorConfig() {
     return new VoltageMonitorConfig();
@@ -128,6 +134,16 @@ public class AppConfig {
       final ITimer timer) {
     return new Thermostat(thermostatMyRoomConfig, temperatureMonitor, relayAggregator,
         timer, "termo4(my room)");
+  }
+
+  @Bean
+  public IThermostat thermostatHotWatter(
+      final ThermostatConfig thermostatHotWatterConfig,
+      final ITemperatureMonitor temperatureMonitor,
+      final IRelayController relayController,
+      final ITimer timer) {
+    return new Thermostat(thermostatHotWatterConfig, temperatureMonitor, relayController,
+        timer, "termo5(hot watter)");
   }
 
 }
