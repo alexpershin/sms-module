@@ -35,7 +35,7 @@ sms-config:
   - phone: 79119378212
     name: mama
 
-thermostat.schedule: '1/30 * * * * ?'
+thermostat.schedule: '5 0/1 * * * ?'
 
 thermostat-electro:
   tDay: 14.0
@@ -113,6 +113,6 @@ button-controller:
   buttonPinName: 'GPIO 5'
 
 relay-aggregator:
-  schedule: '5/30 * * * * ?'
+  schedule: '10 0/1 * * * ?'
   pinAggregates:
     '[GPIO 1]': 3
