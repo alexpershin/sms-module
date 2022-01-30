@@ -1,6 +1,7 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,12 +23,21 @@ public class SMSProcessorTest {
   private SMSConfig smsConfig;
 
   @Before
-  public void before() {
+  public void before() throws IOException {
     smsConfig = new SMSConfig();
     smsConfig.setForwardingPhone(FORWARDING_PHONE);
     smsConfig.setInputFolder("src/test/resources/messages/inbox");
+
+    Path inPath = new File(smsConfig.getInputFolder()).toPath();
+    if(!Files.exists(inPath)){
+      Files.createDirectory(inPath);
+    }
     smsConfig.setProcessedFolder("src/test/resources/messages/processed");
     smsConfig.setOutputFolder("src/test/resources/messages/outbox");
+    Path outPath = new File(smsConfig.getOutputFolder()).toPath();
+    if(!Files.exists(outPath)){
+      Files.createDirectory(outPath);
+    }
 
     CommandExecutor commandExecutor = new CommandExecutor(
         () -> null, () -> null, () -> null, () -> null, () -> null, () -> null, () -> null);
