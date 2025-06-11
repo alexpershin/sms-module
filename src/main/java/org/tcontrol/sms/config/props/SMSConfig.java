@@ -5,7 +5,6 @@ import com.pi4j.io.gpio.RaspiPin;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 

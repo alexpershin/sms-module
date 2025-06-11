@@ -8,7 +8,8 @@ import com.pi4j.io.gpio.PinState;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.PostConstruct;
+
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.tcontrol.sms.dao.SensorValue;
