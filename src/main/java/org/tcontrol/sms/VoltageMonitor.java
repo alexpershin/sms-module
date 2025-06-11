@@ -44,8 +44,6 @@ import java.util.List;
 import java.util.Optional;
 
 import jakarta.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -64,13 +62,13 @@ public class VoltageMonitor implements IVoltageMonitor {
 
   GpioPinAnalogInput[] inputs;
 
-  private List<VoltageResult> voltageResults = new ArrayList<>();
+  private final List<VoltageResult> voltageResults = new ArrayList<>();
 
   public VoltageMonitor(VoltageMonitorConfig voltageMonitorConfig) {
     this.voltageMonitorConfig = voltageMonitorConfig;
   }
 
-  private VoltageMonitorConfig voltageMonitorConfig;
+  private final VoltageMonitorConfig voltageMonitorConfig;
 
   @PostConstruct
   public void init() {

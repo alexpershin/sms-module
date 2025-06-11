@@ -18,7 +18,7 @@ import org.tcontrol.sms.dao.SensorValue;
 @Slf4j
 public class RelayController implements IRelayController {
 
-  private CSVStatisticsWriter statisticsWriter;
+  private final CSVStatisticsWriter statisticsWriter;
 
   private GpioController gpio;
   final private Map<String, GpioPinDigitalOutput> pins = new HashMap<>();

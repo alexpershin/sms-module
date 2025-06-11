@@ -28,7 +28,7 @@ public class ThermostatConfig {
   public void postConstruct() {
     nightBegin();
     nightEnd();
-    relayPins.forEach((pin) -> RaspiPin.getPinByName(pin));
+    relayPins.forEach(RaspiPin::getPinByName);
   }
 
   public LocalTime nightBegin() {

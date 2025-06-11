@@ -1,7 +1,5 @@
 package org.tcontrol.sms.config.props;
 
-import com.pi4j.io.gpio.Pin;
-import com.pi4j.io.gpio.RaspiPin;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
